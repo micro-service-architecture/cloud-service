@@ -1,0 +1,4 @@
+rootProject.name = 'service'
+include 'boot-user'
+include 'data-user'
+
