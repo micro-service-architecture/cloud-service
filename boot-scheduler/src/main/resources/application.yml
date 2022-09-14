@@ -1,0 +1,19 @@
+server:
+  port: 8088
+
+spring:
+  application:
+    name: JobScheduler
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/batch
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  quartz:
+    scheduler-name: QuartzScheduler
+    job-store-type: memory
+    properties:
+      org:
+        quartz:
+          threadPool:
+            threadCount: 5
