@@ -5,15 +5,22 @@ spring:
   application:
     name: JobScheduler
   datasource:
+    driver-class-name: org.h2.Driver
     url: jdbc:h2:tcp://localhost/~/batch
     username: sa
     password:
-    driver-class-name: org.h2.Driver
-  quartz:
-    scheduler-name: QuartzScheduler
-    job-store-type: memory
-    properties:
-      org:
-        quartz:
-          threadPool:
-            threadCount: 5
+
+org.quartz:
+  jobStore:
+    class: org.quartz.impl.jdbcjobstore.JobStoreTX
+    driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+    dataSource: myDS
+    tablePrefix: QRTZ_
+    useProperties: true # 이 값이 true이면 JobDataMaps에 저장되는 값이 binary가 아닌 string 값으로 저장된다.
+    misfireThreshold: 60000 # 기본값 : 1분. Trigger가 misfire(불발)된 것으로 간주되는 시간이 1분이 지나면 misfire로 판단한다.
+  dataSource:
+    myDS:
+      driver: org.h2.Driver
+      URL: jdbc:h2:tcp://localhost/~/batch
+      user: sa
+      password:
