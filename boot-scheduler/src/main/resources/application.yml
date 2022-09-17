@@ -6,9 +6,24 @@ spring:
     name: JobScheduler
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:tcp://localhost/~/batch
+    url: jdbc:h2:tcp://localhost/~/scheduler
     username: sa
     password:
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        # show_sql: true
+        format_sql: true
+  quartz:
+    jdbc:
+      initialize-schema: always
+      schema: classpath:script/quartz_tables_h2.sql
+
+logging.level:
+  org.hibernate.SQL: debug
+  org.hibernate.type: trace
 
 org.quartz:
   jobStore:
@@ -21,6 +36,6 @@ org.quartz:
   dataSource:
     myDS:
       driver: org.h2.Driver
-      URL: jdbc:h2:tcp://localhost/~/batch
+      URL: jdbc:h2:tcp://localhost/~/scheduler
       user: sa
       password:
