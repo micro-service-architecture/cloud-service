@@ -1,9 +1,8 @@
 package com.boot.scheduler.config;
 
-import com.boot.scheduler.service.JobsListener;
-import com.boot.scheduler.service.TriggersListener;
+import com.boot.scheduler.listener.JobsListener;
+import com.boot.scheduler.listener.TriggersListener;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.quartz.QuartzProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +13,7 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-public class SchedulerConfig {
+public class SchedulerConfiguration {
     @Autowired
     private TriggersListener triggersListener;
     @Autowired

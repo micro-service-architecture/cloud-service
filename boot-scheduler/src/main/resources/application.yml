@@ -11,15 +11,11 @@ spring:
     password:
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     properties:
       hibernate:
         # show_sql: true
         format_sql: true
-  quartz:
-    jdbc:
-      initialize-schema: always
-      schema: classpath:script/quartz_tables_h2.sql
 
 logging.level:
   org.hibernate.SQL: debug
