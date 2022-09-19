@@ -7,6 +7,7 @@ import org.quartz.JobExecutionException;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 @Slf4j
+@DisallowConcurrentExecution
 public class SimpleJob extends QuartzJobBean {
 
     @Override

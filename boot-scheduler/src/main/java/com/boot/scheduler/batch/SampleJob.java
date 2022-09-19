@@ -1,14 +1,17 @@
 package com.boot.scheduler.batch;
 
-import com.boot.scheduler.batch.tasklet.MessageTasklet;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.*;
+import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+@Slf4j
 @Configuration
 @EnableBatchProcessing
 public class SampleJob {
@@ -23,17 +26,23 @@ public class SampleJob {
     public Job SampleJob() {
         System.out.println("SampleJob 메서드 실행");
         return jobBuilderFactory.get("SampleJob")
-                .flow(helloStep(null))
+                .flow(helloStep())
                 .end()
                 .build();
     }
 
     @Bean
-    @JobScope
-    public Step helloStep(@Value("#{jobParameters[date]}") String date) {
+    public Step helloStep() {
         System.out.println("helloStep 메서드 실행");
-        return stepBuilderFactory.get("myHelloStep") // 임의의 스탭 이름을 지정
-                .tasklet(new MessageTasklet("Hello!")) // 실행하는 Tasklet을 지정
-                .build();
+        return stepBuilderFactory.get("helloStep").tasklet(helloWorldTasklet(null)).build();
+    }
+
+    @Bean
+    @StepScope
+    public Tasklet helloWorldTasklet(@Value("#{jobParameters['message']}") String message) {
+        return (stepContribution, chukContext) -> {
+            System.out.println(message);
+            return RepeatStatus.FINISHED;
+        };
     }
 }

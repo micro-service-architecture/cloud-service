@@ -7,6 +7,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
@@ -16,9 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
+import java.util.Date;
 import java.util.stream.IntStream;
 
 @Slf4j
+@DisallowConcurrentExecution
 public class CronJob extends QuartzJobBean {
 
     @Autowired
@@ -32,8 +35,11 @@ public class CronJob extends QuartzJobBean {
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
         log.info("CronJob Start................");
         Job bean = applicationContext.getBean(context.getJobDetail().getKey().getName(), Job.class);
+
+        JobParameters jobParameters = new JobParametersBuilder().addString("message", "MyHello").addDate("date", new Date())
+                .addLong("time",System.currentTimeMillis()).toJobParameters();
         try {
-            jobLauncher.run(bean, new JobParameters());
+            jobLauncher.run(bean, jobParameters);
             log.info(context.getJobDetail().getKey().getName() + " 실행");
         } catch (JobExecutionAlreadyRunningException e) {
             throw new RuntimeException(e);
