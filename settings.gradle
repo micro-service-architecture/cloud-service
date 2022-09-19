@@ -2,4 +2,5 @@ rootProject.name = 'service'
 include 'boot-user'
 include 'data-user'
 include 'boot-scheduler'
+include 'boot-batch'
 
