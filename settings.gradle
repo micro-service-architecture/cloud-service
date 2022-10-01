@@ -1,6 +1,6 @@
 rootProject.name = 'service'
 include 'boot-scheduler'
-include 'boot-auth'
 include 'boot-first-service'
 include 'boot-second-service'
+include 'boot-user'
 
