@@ -49,3 +49,4 @@ public UserDto createUser(UserDto userDto) {
 #### response
 ![image](https://user-images.githubusercontent.com/31242766/193813545-269e2a08-7fa4-43b4-b2ee-bf9f6ffe79ed.png)
 
+## security 연동
