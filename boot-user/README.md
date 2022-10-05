@@ -77,3 +77,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 - ALLOW-FROM origin : 이 홈페이지는 origin 도메인의 페이지에서 포함하는 것을 허용한다.
     
 예를 들어, <iframe>내에 표시되는 것을 허용하지 않을 경우에는 `DENY`, 같은 홈페이지 내부에서만 허용할 경우에는 `SAMEORGIN`, 일부 다른 사이트의 페이지 내에서 표시되는 것을 허용해야 한다면 `ALLOW-FROM origin`을 사용할 수 있다. 다만 `ALLOW-FROM origin`의 경우에는 웹 브라우저에 따라서는 지원하지 않는 경우도 있다.
+    
+## 출처
+https://webhack.dynu.net/?idx=20161117.003&print=friendly
