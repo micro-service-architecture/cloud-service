@@ -34,7 +34,7 @@ public UserDto createUser(UserDto userDto) {
     ModelMapper mapper = new ModelMapper();
     mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
     UserEntity userEntity = mapper.map(userDto, UserEntity.class);
-    userEntity.setEncryptedPwd("encrypted_password");
+    userEntity.setEncryptedPwd(passwordEncoder.encode(userDto.getPwd()));
 
     userRepository.save(userEntity);
 
