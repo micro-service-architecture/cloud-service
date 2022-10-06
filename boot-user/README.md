@@ -1,7 +1,16 @@
 # boot-user
-## 회원가입
+## 사용자 서비스
 ![image](https://user-images.githubusercontent.com/31242766/193811969-0d969c2f-e0d7-4cc2-8933-597192997429.png)
-### 회원가입 API
+### APIs
+|기능|URI (API Gateway 사용시)|URL (API Gateway 미사용시)|HTTP Method|
+|----|------------------------|-------------------------|-----------|
+|작동 상태 확인|/user-service/users/health_check|/users/health_check|GET|
+|환영 메시지|/user-service/users/welcome|/welcome|GET|
+|사용자 정보 등록|/user-service/users|/users|POST|
+|전체 사용자 조회|/user-service/users|/users|GET|
+|사용자 정보, 주문 내역 조회|/user-service/users/{user_id}|/users/{user_id}|GET|
+
+### 사용자 정보 등록 
 #### request 
 ```json
 {
@@ -10,44 +19,18 @@
     "pwd" : "qwer1234"
 }
 ```
-#### controller
-```java
-@PostMapping("/users")
-public ResponseEntity<ResponseUser> createUser(@RequestBody RequestUser user) {
-    ModelMapper mapper = new ModelMapper();
-    mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-
-    UserDto userDto = mapper.map(user, UserDto.class);
-    userService.createUser(userDto);
-
-    ResponseUser responseUser = mapper.map(userDto, ResponseUser.class);
-
-    return ResponseEntity.status(HttpStatus.CREATED).body(responseUser);
-}
-```
-#### service
-```java
-@Override
-public UserDto createUser(UserDto userDto) {
-    userDto.setUserId(UUID.randomUUID().toString());
-
-    ModelMapper mapper = new ModelMapper();
-    mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-    UserEntity userEntity = mapper.map(userDto, UserEntity.class);
-    userEntity.setEncryptedPwd(passwordEncoder.encode(userDto.getPwd()));
-
-    userRepository.save(userEntity);
-
-    UserDto returnUserDto = mapper.map(userEntity, UserDto.class);
-
-    return returnUserDto;
-}
-```
-#### db
-![image](https://user-images.githubusercontent.com/31242766/193813387-6d740306-f143-4c8c-9853-9dbbe1fc27ed.png)
-
 #### response
 ![image](https://user-images.githubusercontent.com/31242766/193813545-269e2a08-7fa4-43b4-b2ee-bf9f6ffe79ed.png)
+
+## 전체 사용자 조회
+#### response
+![image](https://user-images.githubusercontent.com/31242766/194300792-488820e5-459e-4dc3-bd24-e679870fed37.png)
+
+## 사용자 정보, 주문 내역 조회
+#### request
+- 예시 : localhost:8000/user-service/users/be71131b-fe87-47e7-a21d-53cb1c1ccde6
+#### response
+![image](https://user-images.githubusercontent.com/31242766/194301354-f4786e1d-1657-4b07-a105-a2454690e0da.png)
 
 ## security 연동
 ```java
