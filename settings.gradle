@@ -3,4 +3,5 @@ include 'boot-scheduler'
 include 'boot-first-service'
 include 'boot-second-service'
 include 'boot-user'
+include 'boot-catalogs-service'
 
