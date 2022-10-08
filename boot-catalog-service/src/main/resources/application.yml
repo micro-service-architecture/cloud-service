@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: user-service
+    name: catalog-service
   h2:
     console:
       enabled: true
@@ -15,12 +15,14 @@ spring:
     url: jdbc:h2:mem:testdb
     username: sa
   jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
     properties:
       hibernate:
-#        show_sql: true
+        #        show_sql: true
         format_sql: true
+    defer-datasource-initialization: true
 
 eureka:
   client:
@@ -31,5 +33,6 @@ eureka:
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 
-greeting:
-  message: Welcome to the Simple E-commerce.
+logging.level:
+  org.hibernate.SQL: debug
+  org.hibernate.type: trace
