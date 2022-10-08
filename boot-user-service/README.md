@@ -1,4 +1,4 @@
-# boot-user
+# boot-user-service
 ## 사용자 서비스
 ![image](https://user-images.githubusercontent.com/31242766/193811969-0d969c2f-e0d7-4cc2-8933-597192997429.png)
 ### APIs
