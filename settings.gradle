@@ -4,4 +4,5 @@ include 'boot-first-service'
 include 'boot-second-service'
 include 'boot-user-service'
 include 'boot-catalog-service'
+include 'boot-order-service'
 
