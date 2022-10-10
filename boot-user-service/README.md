@@ -138,4 +138,5 @@ API 요청 정보에서 JWT 토큰 및 정보를 검증하는 Custom Filter 클�
 
 ## 출처
 https://webhack.dynu.net/?idx=20161117.003&print=friendly     
-https://to-dy.tistory.com/86
+https://to-dy.tistory.com/86      
+https://cheese10yun.github.io/spring-cloud-gateway/
