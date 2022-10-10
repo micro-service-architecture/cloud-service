@@ -9,6 +9,7 @@
 |사용자 정보 등록|/user-service/users|/users|POST|
 |전체 사용자 조회|/user-service/users|/users|GET|
 |사용자 정보, 주문 내역 조회|/user-service/users/{user_id}|/users/{user_id}|GET|
+|사용자 로그인|/user-service/login|/login|POST|
 
 ### 사용자 정보 등록 
 #### request 
