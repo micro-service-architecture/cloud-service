@@ -33,3 +33,11 @@ eureka:
 
 greeting:
   message: Welcome to the Simple E-commerce.
+
+logging:
+  level:
+    com.boot.user: DEBUG
+
+token:
+  expiration_time: 86400000 # 60 * 60 * 24 * 1000 (하루)
+  secret: comCloudServiceBootUserServiceSecretKeyAuthorizationJwtManageToken
