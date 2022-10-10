@@ -98,6 +98,43 @@ Spring Security 를 이용한 로그인 요청 발생 시 UsernamePasswordAuthen
 #### response
 ![image](https://user-images.githubusercontent.com/31242766/194865470-02146e4a-d774-484f-b578-f1942f618c00.png)
 
+### 인가
+![image](https://user-images.githubusercontent.com/31242766/194882645-39bd5c37-e344-403f-8ebf-51c5d1056ad7.png)
+
+최초에 사용자가 로그인하면 JWT 토큰을 발급한다. 사용자가 `로그인` 시점 및 `회원가입` 시점에는 JWT 토큰이 없기 때문에 게이트웨이에서 JWT 를 검증하지 않는다. 이후 사용자는 서버의 API 를 호출하기 위해서 헤더에 정보를 입력한다. 각각의 마이크로서비스들이 JWT 토큰을 검증하는 것이 아니라 게이트웨이에서 검증을 마치고 검증된 요청만 마이크로서비스로 전달한다. 
+
+### Routes 정보
+```yml
+...
+- id: user-service
+  uri: lb://USER-SERVICE
+  predicates:
+    - Path=/user-service/login
+    - Method=POST
+  filters:
+    - RemoveRequestHeader=Cookie
+    - RewritePath=/user-service/(?<segment>.*), /${segment}
+- id: user-service
+  uri: lb://USER-SERVICE
+  predicates:
+    - Path=/user-service/users
+    - Method=POST
+  filters:
+    - RemoveRequestHeader=Cookie
+    - RewritePath=/user-service/(?<segment>.*), /${segment}
+- id: user-service
+  uri: lb://USER-SERVICE
+  predicates:
+    - Path=/user-service/**
+    - Method=GET
+  filters:
+    - RemoveRequestHeader=Cookie
+    - RewritePath=/user-service/(?<segment>.*), /${segment}
+    - AuthorizationHeaderFilter
+...
+```
+### AuthorizationHeaderFilter
+API 요청 정보에서 JWT 토큰 및 정보를 검증하는 Custom Filter 클래스이다.
 
 ## 출처
 https://webhack.dynu.net/?idx=20161117.003&print=friendly     
