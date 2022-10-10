@@ -103,7 +103,7 @@ Spring Security 를 이용한 로그인 요청 발생 시 UsernamePasswordAuthen
 
 최초에 사용자가 로그인하면 JWT 토큰을 발급한다. 사용자가 `로그인` 시점 및 `회원가입` 시점에는 JWT 토큰이 없기 때문에 게이트웨이에서 JWT 를 검증하지 않는다. 이후 사용자는 서버의 API 를 호출하기 위해서 헤더에 정보를 입력한다. 각각의 마이크로서비스들이 JWT 토큰을 검증하는 것이 아니라 게이트웨이에서 검증을 마치고 검증된 요청만 마이크로서비스로 전달한다. 
 
-### Routes 정보
+#### Routes 정보
 ```yml
 ...
 - id: user-service
@@ -133,7 +133,7 @@ Spring Security 를 이용한 로그인 요청 발생 시 UsernamePasswordAuthen
     - AuthorizationHeaderFilter
 ...
 ```
-### AuthorizationHeaderFilter
+#### AuthorizationHeaderFilter
 API 요청 정보에서 JWT 토큰 및 정보를 검증하는 Custom Filter 클래스이다.
 
 ## 출처
