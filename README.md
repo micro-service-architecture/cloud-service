@@ -27,9 +27,9 @@
 |exchange|Any|원하는 HTTP 메소드 요청 후 결과는 ResponseEntity로 반환|
 |execute|Any|Request/Response의 콜백을 수정|
 
-#### User-Service <-> Order-Service
-User-Sergice 에서 ` @GetMapping("/users/{userId}")` 해당 api 를 호출하면, Order-Serivce 에서 `{userId}` 로 저장되어있는 주문 내역을 가져오도록 통신할 것이다.
-먼저, User-Service 에서 `RestTemplate` 을 빈으로 등록하자. 그리고나서 UserController 에서 해당 아이디로 주문 내역을 가져오는 UserService 에서 해당 내용을 구현하자.
+#### UserServiceApp <-> OrderServiceApp
+UserSergiceApp 에서 `@GetMapping("/users/{userId}")` api 를 호출하면, OrderSerivceApp 에서 `/{userId}/orders` api 로 저장되어있는 주문 내역을 가져오도록 통신할 것이다.
+먼저, UserServiceApp 에서 `RestTemplate` 을 빈으로 등록하자. 그리고나서 UserService 에서 해당 내용을 구현하자.
 ```java
 public class UserServiceApplication {
 
@@ -52,7 +52,7 @@ public ResponseEntity<ResponseUser> getUsers(@PathVariable("userId") String user
 }
 ```
 ### UserService
-UserService 에서 OrderSerivce API 를 호출할 때, url 정보가 입력된다. 하지만 url 정보같은 경우, 서버주소가 달라질 수 있으며 api 정보가 달라질 수 있으므로, 설정 파일로 뺴서 관리하도록 한다.
+UserService 에서 OrderSerivce API 를 호출할 때 url 정보가 입력된다. 하지만 url 정보가 달라질 수 있으므로 설정 파일로 뺴서 관리하도록 한다.
 ```java
 @Override
 public UserDto getUserByUserId(String userId) {
