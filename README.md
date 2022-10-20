@@ -197,5 +197,31 @@ public UserDto getUserByUserId(String userId) {
 #### 테스트 결과
 ![image](https://user-images.githubusercontent.com/31242766/196944360-a467dc9a-9273-49f5-8e58-7382d40faf3e.png)
 
+#### Feign Client 에서 로그 사용
+`로그`와 `예외처리` 에서 사용되는 서버는 여전히 `UserServiceApp` 과 `OrderServiceApp` 이다.    
+먼저, `application.yml` 파일에서 로깅 레벨을 정의한다. 그리고 `feign 클래스` 에 존재하는 `Logger` 를 빈으로 등록하자.
+```yml
+...
+logging:
+  level:
+    com.boot.user.client: DEBUG <- feignClient 가 존재하는 패키지 (com.boot.user.client)
+...
+```
+```java
+@SpringBootApplication
+@EnableDiscoveryClient
+@EnableFeignClients
+public class UserServiceApplication {
+    ...
+    @Bean
+    public Logger.Level feignLoggerLevel() {
+        return Logger.Level.FULL;
+    }
+}
+```
+
+#### FeignException
+UserServiceApp 에서 OrderServiceApp 으로 API 를 호출할 때 잘못된 주소로 호출한다고 하자. 그런데, OrderServiceApp 으로 호출할 때 잘못된 주소로 호출해서 User 정보까지 반환이 안되는 경우는 없어야 한다. 결론은 사용자 정보는 출력이 되면서 Order 정보만 표시하지 않도록 해야한다. 문제가 생긴 부분은 해결을 해야겠지만 문제가 생기지 않은 부분은 반환해주어야 한다.
+
 ## 참고
 https://wildeveloperetrain.tistory.com/172
