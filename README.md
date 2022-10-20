@@ -235,6 +235,8 @@ try {
 }
 ...
 ```
+아래 이미지처럼 OrderServiceApp API 를 호출할 때, 에러를 발생하고 User 정보를 반환한다.
+
 ![image](https://user-images.githubusercontent.com/31242766/196958143-a32cc8fc-bce7-4dde-ac99-81459ddf35ba.png)
 
 ![image](https://user-images.githubusercontent.com/31242766/196958326-c4b3a6a9-0f2c-49b4-bc87-15ea4a19bd67.png)
