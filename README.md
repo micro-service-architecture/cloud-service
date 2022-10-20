@@ -219,9 +219,25 @@ public class UserServiceApplication {
     }
 }
 ```
+잘못된 주소로 OrderServiceApp API 를 호출했을 때 로그 결과를 확인할 수 있다.
+
+![image](https://user-images.githubusercontent.com/31242766/196950334-9ca8ef0b-9a6c-438f-8fd4-878f97fedd80.png)
 
 #### FeignException
 UserServiceApp 에서 OrderServiceApp 으로 API 를 호출할 때 잘못된 주소로 호출한다고 하자. 그런데, OrderServiceApp 으로 호출할 때 잘못된 주소로 호출해서 User 정보까지 반환이 안되는 경우는 없어야 한다. 결론은 사용자 정보는 출력이 되면서 Order 정보만 표시하지 않도록 해야한다. 문제가 생긴 부분은 해결을 해야겠지만 문제가 생기지 않은 부분은 반환해주어야 한다.
+```java
+...
+List<ResponseOrder> orderList = null;
+try {
+    orderList = orderServiceClient.getOrders(userId);
+} catch (FeignException ex) {
+    log.error(ex.getMessage());
+}
+...
+```
+![image](https://user-images.githubusercontent.com/31242766/196958143-a32cc8fc-bce7-4dde-ac99-81459ddf35ba.png)
+
+![image](https://user-images.githubusercontent.com/31242766/196958326-c4b3a6a9-0f2c-49b4-bc87-15ea4a19bd67.png)
 
 ## 참고
 https://wildeveloperetrain.tistory.com/172
