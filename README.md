@@ -113,3 +113,89 @@ order_service:
 ![image](https://user-images.githubusercontent.com/31242766/196743043-cf2bcee5-e6ca-4348-8a8e-e94090644f05.png)
 
 ### FeignClient 란?
+- REST Call 을 추상화한 Spring Cloud Netflix 라이브러리이다. 
+- 호출하려는 HTTP Endpoint 에 대한 Interface 를 생성하여 사용한다.
+- @FeignClient 선언하여 사용한다.
+- 개발자 입장에서 훨씬 더 직관적으로 하나의 어플리케이션 안에 포함되어 있는 메소드를 호출하는 것처럼 사용할 수 있다.
+
+그럼, FeignClient 를 사용하여 UserServiceApp <-> OrderServiceApp 간의 통신을 진행해보자. 먼저 `@FeignClient` 어노테이션을 추가한다.
+```java
+@SpringBootApplication
+@EnableDiscoveryClient
+@EnableFeignClients
+public class UserServiceApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(UserServiceApplication.class, args);
+    }
+
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    @LoadBalanced
+    public RestTemplate getRestTemplate() {
+        return new RestTemplate();
+    }
+}
+```
+UserService 에 client 패키지를 추가하여 해당 패키지 안에 통신하고자 하는 마이크로서비스명으로 인터페이스를 선언하자.
+```java
+package com.boot.user.client;
+
+import com.boot.user.vo.ResponseOrder;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
+
+@FeignClient(name = "order-service") // 해당 name 은 마이크로서비스 명칭으로 지정한다.
+public interface OrderServiceClient {
+
+    @GetMapping("/order-service/{userId}/orders") // OrderService API Url 이다. 
+    List<ResponseOrder> getOrders(@PathVariable String userId); // 반환값은 OrderService 해당 API 의 반환값이다.
+}
+```
+그리고 UserService 에서 `RestTemplate` 을 이용한 것처럼 해당 `getUserByUserId` 메소드에서 API 를 가져온다. 소스상에서 보는 것처럼 `feignClient` 를 사용하여 메소드처럼 사용할 수 있으며 소스 길이도 확실히 짧아졌다.
+```java
+@Override
+public UserDto getUserByUserId(String userId) {
+    UserEntity userEntity = userRepository.findByUserId(userId);
+
+    if(userEntity == null)
+        throw new UsernameNotFoundException("User not found");
+
+    UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
+
+//  List<ResponseOrder> orders = new ArrayList<>();
+
+    /* Using as Rest Template */
+    /**
+     * url : http://127.0.0.1:8000/order-service/%s/orders
+     * Method : GET
+     * parameters : null
+     * response : List<ResponseOrder>
+     */
+    // String orderUrl = String.format(env.getProperty("order_service.url"), userId);
+    // ResponseEntity<List<ResponseOrder>> orderListResponse = restTemplate.exchange(orderUrl, HttpMethod.GET,
+    //        null,
+    //        new ParameterizedTypeReference<List<ResponseOrder>>() {
+    // });
+    // List<ResponseOrder> orderList = orderListResponse.getBody();
+    
+    /* Using a feign client */
+    List<ResponseOrder> orderList = orderServiceClient.getOrders(userId);
+    
+    userDto.setOrders(orderList);
+
+    return userDto;
+}
+```
+#### 테스트 결과
+![image](https://user-images.githubusercontent.com/31242766/196944360-a467dc9a-9273-49f5-8e58-7382d40faf3e.png)
+
+## 참고
+https://wildeveloperetrain.tistory.com/172
