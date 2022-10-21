@@ -296,8 +296,7 @@ order_service:
   exception:
     orders_is_empty: User's orders is empty.
 ```
-다음과 같이 메시지와 상태코드를 던져준다. 
-- 참고 : 만약 trace 정보와 message 정보가 출력되지 않다면? `org.springframework.boot:spring-boot-devtools` 를 디펜던시에 추가한다.
+다음과 같이 메시지와 상태코드를 던져준다. 만약 trace 정보와 message 정보가 출력되지 않다면? `org.springframework.boot:spring-boot-devtools` 를 디펜던시에 추가한다.
 
 ![image](https://user-images.githubusercontent.com/31242766/197248761-6b76f435-bf47-4097-b791-f6c213e7f9ef.png)
 
