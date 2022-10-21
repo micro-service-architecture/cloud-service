@@ -225,6 +225,15 @@ public class UserServiceApplication {
 - `Logger.Leverl.HEADERS` : Request, Response Header 정보와 함께 BASIC 정보를 로깅한다.
 
 잘못된 주소로 OrderServiceApp API 를 호출했을 때 로그 결과를 확인할 수 있다.
+```java
+// OrderService API 에 존재하는 정상적인 경로는 /order-service/{userId}/orders 이다.
+@FeignClient(name = "order-service")
+public interface OrderServiceClient {
+
+    @GetMapping("/order-service/{userId}/orders_ng")
+    List<ResponseOrder> getOrders(@PathVariable String userId);
+}
+```
 
 ![image](https://user-images.githubusercontent.com/31242766/196950334-9ca8ef0b-9a6c-438f-8fd4-878f97fedd80.png)
 
@@ -245,6 +254,9 @@ try {
 ![image](https://user-images.githubusercontent.com/31242766/196958143-a32cc8fc-bce7-4dde-ac99-81459ddf35ba.png)
 
 ![image](https://user-images.githubusercontent.com/31242766/196958326-c4b3a6a9-0f2c-49b4-bc87-15ea4a19bd67.png)
+
+#### ErrorDecoder 
+`ErrorDecoder` 인터페이스의 `decode` 메소드가 존재하는데 클라이언트 측에서 발생했던 에러 상태 코드 분기를 통해 작업할 수 있도록 지원을 해준다.
 
 ## 참고
 https://wildeveloperetrain.tistory.com/172
