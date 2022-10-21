@@ -256,7 +256,60 @@ try {
 ![image](https://user-images.githubusercontent.com/31242766/196958326-c4b3a6a9-0f2c-49b4-bc87-15ea4a19bd67.png)
 
 #### ErrorDecoder 
-`ErrorDecoder` 인터페이스의 `decode` 메소드가 존재하는데 클라이언트 측에서 발생했던 에러 상태 코드 분기를 통해 작업할 수 있도록 지원을 해준다.
+`ErrorDecoder` 인터페이스의 `decode` 메소드가 존재하는데 클라이언트 측에서 발생했던 에러 상태 코드 분기를 통해 작업할 수 있도록 지원을 해준다. 위의 작업에서 FeignException Log 를 확인하기 위해서 `try-catch` 문을 작성한 것을 주석처리하고 `ErrorDecoder` 를 이용해보자. 상태 코드(404, 400...) 와 methodKey(FeignClient Url) 를 통해서 경로가 이상하다면 외부 설정에 등록되어 있는 오류 메시지와 함께 오류를 던지도록 한다.
+```java
+@Component
+public class FeignErrorDecoder implements ErrorDecoder {
+
+    Environment env;
+
+    @Autowired
+    public FeignErrorDecoder(Environment env) {
+        this.env = env;
+    }
+
+    @Override
+    public Exception decode(String methodKey, Response response) {
+        switch (response.status()) {
+            case 400:
+                break;
+            case 404:
+                if(methodKey.contains("getOrders")) {
+                    return new ResponseStatusException(HttpStatus.valueOf(response.status()),
+                            env.getProperty("order_service.exception.orders_is_empty"));
+                }
+                break;
+            default:
+                return new Exception(response.reason());
+        }
+        return null;
+    }
+}
+```
+```yml
+# user-service.yml
+
+...
+order_service:
+  # url: http://127.0.0.1:8000/order-service/%s/orders
+  url: http://ORDER-SERVICE/order-service/%s/orders
+  exception:
+    orders_is_empty: User's orders is empty.
+```
+다음과 같이 메시지와 상태코드를 던져준다. 
+- 참고 : 만약 trace 정보와 message 정보가 출력되지 않다면? `org.springframework.boot:spring-boot-devtools` 를 디펜던시에 추가한다.
+
+![image](https://user-images.githubusercontent.com/31242766/197248761-6b76f435-bf47-4097-b791-f6c213e7f9ef.png)
+
+FeignClient 를 여러 개 선언 후 각 Interface 마다 별도의 ErrorDecoder 를 설정할 수 있다. (configuration 속성)
+```java
+@FeignClient(name = "order-service", configuration = FeignErrorDecoder.class)
+public interface OrderServiceClient {
+
+    @GetMapping("/order-service/{userId}/orders_ng")
+    List<ResponseOrder> getOrders(@PathVariable String userId);
+}
+```
 
 ## 참고
 https://wildeveloperetrain.tistory.com/172
