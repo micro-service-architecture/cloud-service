@@ -118,7 +118,7 @@ order_service:
 - @FeignClient 선언하여 사용한다.
 - 개발자 입장에서 훨씬 더 직관적으로 하나의 어플리케이션 안에 포함되어 있는 메소드를 호출하는 것처럼 사용할 수 있다.
 
-그럼, FeignClient 를 사용하여 UserServiceApp <-> OrderServiceApp 간의 통신을 진행해보자. 먼저 `@FeignClient` 어노테이션을 추가한다.
+그럼, FeignClient 를 사용하여 UserServiceApp <-> OrderServiceApp 간의 통신을 진행해보자. 먼저 `@EnableFeignClients` 어노테이션을 추가한다.
 ```java
 @SpringBootApplication
 @EnableDiscoveryClient
@@ -219,6 +219,11 @@ public class UserServiceApplication {
     }
 }
 ```
+- `Logger.Leverl.FULL` : Request와 Response의 Header, Body 그리고 메타데이터를 로깅한다.
+- `Logger.Leverl.NONE` : 로깅하지 않는다. (DEFAULT)
+- `Logger.Leverl.BASIC` : Request Method와 URL 그리고 Reponse 상태 코드와 실행 시간을 로깅한다.
+- `Logger.Leverl.HEADERS` : Request, Response Header 정보와 함께 BASIC 정보를 로깅한다.
+
 잘못된 주소로 OrderServiceApp API 를 호출했을 때 로그 결과를 확인할 수 있다.
 
 ![image](https://user-images.githubusercontent.com/31242766/196950334-9ca8ef0b-9a6c-438f-8fd4-878f97fedd80.png)
