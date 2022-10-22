@@ -311,4 +311,5 @@ public interface OrderServiceClient {
 ```
 
 ## 참고
-https://wildeveloperetrain.tistory.com/172
+https://wildeveloperetrain.tistory.com/172       
+https://stackoverflow.com/questions/54827407/remove-trace-field-from-responsestatusexception
