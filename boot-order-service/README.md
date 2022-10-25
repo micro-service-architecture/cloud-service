@@ -1,4 +1,4 @@
-# boot-catalog-service
+# boot-order-service
 ## APIs
 |기능|URI (API Gateway 사용시)|URL (API Gateway 미사용시)|HTTP Method|
 |----|------------------------|-------------------------|-----------|
