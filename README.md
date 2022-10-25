@@ -310,6 +310,9 @@ public interface OrderServiceClient {
 }
 ```
 
+## 데이터 동기화 문제
+[Multi Orders Service](https://github.com/multi-module-project/cloud-service/tree/master/boot-order-service) 를 사례로 확인해보자.
+
 ## 참고
 https://wildeveloperetrain.tistory.com/172       
 https://stackoverflow.com/questions/54827407/remove-trace-field-from-responsestatusexception
