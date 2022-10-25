@@ -1,7 +1,7 @@
 # boot-order-service
 ## 목차
-* **[APIs](##APIs)**
-* **[데이터 동기화 문제](##데이터-동기화-문제)**
+* **[APIs](#APIs)**
+* **[데이터 동기화 문제](#데이터-동기화-문제)**
 
 ## APIs
 |기능|URI (API Gateway 사용시)|URL (API Gateway 미사용시)|HTTP Method|
