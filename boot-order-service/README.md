@@ -1,4 +1,8 @@
 # boot-order-service
+## 목차
+* **[APIs](##APIs)**
+* **[데이터 동기화 문제](##데이터-동기화-문제)**
+
 ## APIs
 |기능|URI (API Gateway 사용시)|URL (API Gateway 미사용시)|HTTP Method|
 |----|------------------------|-------------------------|-----------|
@@ -26,3 +30,5 @@
 
 #### response
 ![image](https://user-images.githubusercontent.com/31242766/194751323-16b3ced6-39be-4465-907c-dfbb7a4b880b.png)
+
+## 데이터 동기화 문제
