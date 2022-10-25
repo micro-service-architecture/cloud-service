@@ -46,7 +46,7 @@
 ![image](https://user-images.githubusercontent.com/31242766/197783149-f0ca89e8-76ee-41e9-842c-7861c22107a0.png)
 
 - Database 간의 동기화     
-한쪽에서 발생한 데이터를 Message Queuinmg Server(`RabbitMQ` `Kafka`)에 전달하여 변경된 데이터가 있다면 구독 신청한 또 다른 서버에 전달하여 자신의 데이터베이스에 업데이트해주는 방식이다.
+한쪽에서 발생한 데이터를 Message Queuinmg Server([RabbitMQ](https://github.com/haeyonghahn/TIL/tree/master/RabbitMQ), [Kafka](https://github.com/haeyonghahn/TIL/tree/master/Kafka))에 전달하여 변경된 데이터가 있다면 구독 신청한 또 다른 서버에 전달하여 자신의 데이터베이스에 업데이트해주는 방식이다.
 
 ![image](https://user-images.githubusercontent.com/31242766/197783364-71287695-9ba6-4b82-b760-df38ff8a6694.png)
 
