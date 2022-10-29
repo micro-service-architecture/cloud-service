@@ -37,11 +37,11 @@
 #### response
 ![image](https://user-images.githubusercontent.com/31242766/193813545-269e2a08-7fa4-43b4-b2ee-bf9f6ffe79ed.png)
 
-## 전체 사용자 조회
+### 전체 사용자 조회
 #### response
 ![image](https://user-images.githubusercontent.com/31242766/194300792-488820e5-459e-4dc3-bd24-e679870fed37.png)
 
-## 사용자 정보, 주문 내역 조회
+### 사용자 정보, 주문 내역 조회
 #### request
 - 예시 : localhost:8000/user-service/users/be71131b-fe87-47e7-a21d-53cb1c1ccde6
 #### response
