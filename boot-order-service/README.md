@@ -2,6 +2,7 @@
 ## 목차
 * **[APIs](#APIs)**
 * **[데이터 동기화 문제](#데이터-동기화-문제)**
+* **[mariaDB 연동](#mariaDB-연동)**
 
 ## APIs
 |기능|URI (API Gateway 사용시)|URL (API Gateway 미사용시)|HTTP Method|
@@ -54,3 +55,40 @@
 
 ![image](https://user-images.githubusercontent.com/31242766/197784544-c2777d13-ed15-423c-aa7d-49e7afb49f13.png)
 
+## mariaDB 연동
+먼저 [mariaDB 다운로드](https://github.com/haeyonghahn/TIL/blob/master/DB/mariaDB%20%EC%84%A4%EC%B9%98.md) 해보자.
+### application.yml
+```yml
+...
+spring:
+  application:
+    name: order-service
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-allow-others: true
+      path: /h2-console
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb
+    username: sa
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        #        show_sql: true
+        format_sql: true
+    defer-datasource-initialization: true
+    ...
+```
+```gradle
+dependencies {
+    ...
+    implementation 'org.mariadb.jdbc:mariadb-java-client'
+    ...
+}
+```
+![image](https://user-images.githubusercontent.com/31242766/198818864-85551ad5-fc00-42a8-a1f8-56019595fcc4.png)
