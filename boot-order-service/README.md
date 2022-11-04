@@ -92,3 +92,6 @@ dependencies {
 - 하나의 Database 사용 + Database 간의 동기화 (DB + Kafka Connector)
 
 ![image](https://user-images.githubusercontent.com/31242766/197784544-c2777d13-ed15-423c-aa7d-49e7afb49f13.png)
+
+### Kafka 를 활용한 데이터 동기화 해결하기
+Kafka를 활용하기 위해 먼저, [Kafka](https://github.com/haeyonghahn/TIL/tree/master/Kafka) 에 대해 알아보고 OrderService 와 [CatalogService](https://github.com/multi-module-project/cloud-service/tree/master/boot-catalog-service) 를 통해 데이터 동기화 문제를 해결해보자.
