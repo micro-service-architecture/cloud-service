@@ -4,7 +4,6 @@
 * **[mariaDB 연동](#mariaDB-연동)**
 * **[데이터 동기화 문제](#데이터-동기화-문제)**
     * **[Kafka 를 활용한 데이터 동기화 해결하기](#Kafka-를-활용한-데이터-동기화-해결하기)**
-        * **[CatalogService](#CatalogService)**
 
 ## APIs
 |기능|URI (API Gateway 사용시)|URL (API Gateway 미사용시)|HTTP Method|
