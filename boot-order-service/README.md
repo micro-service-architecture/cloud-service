@@ -3,6 +3,8 @@
 * **[APIs](#APIs)**
 * **[mariaDB 연동](#mariaDB-연동)**
 * **[데이터 동기화 문제](#데이터-동기화-문제)**
+    * **[Kafka 를 활용한 데이터 동기화 해결하기](#Kafka-를-활용한-데이터-동기화-해결하기)**
+        * **[CatalogService](#CatalogService)**
 
 ## APIs
 |기능|URI (API Gateway 사용시)|URL (API Gateway 미사용시)|HTTP Method|
@@ -95,3 +97,5 @@ dependencies {
 
 ### Kafka 를 활용한 데이터 동기화 해결하기
 Kafka를 활용하기 위해 먼저, [Kafka](https://github.com/haeyonghahn/TIL/tree/master/Kafka) 에 대해 알아보고 OrderService 와 [CatalogService](https://github.com/multi-module-project/cloud-service/tree/master/boot-catalog-service) 를 통해 데이터 동기화 문제를 해결해보자.
+
+#### CatalogService
