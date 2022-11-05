@@ -97,7 +97,7 @@ dependencies {
 ### Kafka 를 활용한 데이터 동기화 해결하기
 Kafka를 활용하기 위해 먼저, [Kafka](https://github.com/haeyonghahn/TIL/tree/master/Kafka) 에 대해 알아보고 OrderService 와 [CatalogService](https://github.com/multi-module-project/cloud-service/tree/master/boot-catalog-service) 를 통해 데이터 동기화 문제를 해결해보자.
 
-#### 데이터 동기화 Orders -> Catalogs
+#### 1. 데이터 동기화 Orders -> Catalogs
 각 서비스에서는 독립적으로 데이터베이스를 사용하고 있다. 만약 CatalogService에 100개의 상품을 가지고 있다. 여기서 10개의 상품을 주문한다면 Kafka를 통해서 상품 갯수를 90개로 상품 수량 업데이트하는 시나리오로 데이터 동기화를 확인한다.
 
 - OrderService에 요청된 주문의 수량 정보를 CatalogService에 반영
@@ -105,3 +105,5 @@ Kafka를 활용하기 위해 먼저, [Kafka](https://github.com/haeyonghahn/TIL/
 - CatalogService에서 Kafka Topic에 전송된 메시지 취득 -> Consumer
 
 ![image](https://user-images.githubusercontent.com/31242766/200111653-97017f67-bcce-48b4-a7af-4a90cab3636a.png)
+
+#### 2. Multiple Order Service에서의 데이터 동기화
