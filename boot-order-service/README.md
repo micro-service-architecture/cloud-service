@@ -4,6 +4,7 @@
 * **[mariaDB 연동](#mariaDB-연동)**
 * **[데이터 동기화 문제](#데이터-동기화-문제)**
     * **[Kafka 를 활용한 데이터 동기화 해결하기](#Kafka-를-활용한-데이터-동기화-해결하기)**
+     * **[Multiple Order Service에서의 데이터 동기화](#Multiple-Order-Service에서의-데이터-동기화)**
 
 ## APIs
 |기능|URI (API Gateway 사용시)|URL (API Gateway 미사용시)|HTTP Method|
@@ -103,7 +104,7 @@ Kafka를 활용하기 위해 먼저, [Kafka](https://github.com/haeyonghahn/TIL/
 ![image](https://user-images.githubusercontent.com/31242766/200111653-97017f67-bcce-48b4-a7af-4a90cab3636a.png)
 
 - OrderService에 요청된 주문의 수량 정보를 CatalogService에 반영      
-OrderService에서 CATALOG-003 상품을 수량을 15개 주문했다고 가정하자.
+OrderService에서 CATALOG-003 상품 수량을 15개 주문했다고 가정하자.
 
 ![image](https://user-images.githubusercontent.com/31242766/200149698-43708df4-2667-4d9f-bb9c-a77174c30156.png)
 
@@ -127,6 +128,27 @@ public class KafkaProducerConfig {
     public KafkaTemplate<String, String> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
+}
+```
+주문 API에 `Kafka Topic`에 메시지를 보낸다. (`/* send this order to the kafka */`)
+```java
+@PostMapping("/{userId}/orders")
+public ResponseEntity<ResponseOrder> createOrder(@PathVariable("userId") String userId,
+                                               @RequestBody RequestOrder orderDetails) {
+   ModelMapper mapper = new ModelMapper();
+   mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
+   OrderDto orderDto = mapper.map(orderDetails, OrderDto.class);
+   orderDto.setUserId(userId);
+
+   /* jpa */
+   OrderDto createdOrder = orderService.createOrder(orderDto);
+   ResponseOrder responseOrder = mapper.map(createdOrder, ResponseOrder.class);
+
+   /* send this order to the kafka */
+   kafkaProducer.send("example-catalog-topic", orderDto);
+
+   return ResponseEntity.status(HttpStatus.CREATED).body(responseOrder);
 }
 ```
 ```java
@@ -153,27 +175,6 @@ public class KafkaProducer {
 
         return orderDto;
     }
-}
-```
-주문 API에 `Kafka Topic`에 메시지를 보낸다. (`/* send this order to the kafka */`)
-```java
-@PostMapping("/{userId}/orders")
-public ResponseEntity<ResponseOrder> createOrder(@PathVariable("userId") String userId,
-                                               @RequestBody RequestOrder orderDetails) {
-   ModelMapper mapper = new ModelMapper();
-   mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-
-   OrderDto orderDto = mapper.map(orderDetails, OrderDto.class);
-   orderDto.setUserId(userId);
-
-   /* jpa */
-   OrderDto createdOrder = orderService.createOrder(orderDto);
-   ResponseOrder responseOrder = mapper.map(createdOrder, ResponseOrder.class);
-
-   /* send this order to the kafka */
-   kafkaProducer.send("example-catalog-topic", orderDto);
-
-   return ResponseEntity.status(HttpStatus.CREATED).body(responseOrder);
 }
 ```
 
