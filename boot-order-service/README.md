@@ -248,8 +248,50 @@ public class KafkaConsumer {
 
 ![image](https://user-images.githubusercontent.com/31242766/200150046-1f79e357-2129-429c-876b-130316005ede.png)
 
-### Multiple Order Service에서의 데이터 동기화
+#### 2. Multiple Order Service에서의 데이터 동기화
 - OrderService의 JPA 데이터베이스 교체
    - H2 DB -> MariaDB
+   ```yml
+   ...
+   datasource:
+      driver-class-name: org.h2.Driver 
+      url: jdbc:h2:mem:testdb
+      username: sa
+   jpa:
+      database-platform: org.hibernate.dialect.H2Dialect
+   ...
+   ```
+   ```yml
+   ...
+   datasource:
+      driver-class-name: org.mariadb.jdbc.Driver 
+      url: jdbc:mariadb://localhost:3306/mydb
+      username: root
+      password: 비밀번호
+   jpa:
+      database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+   ...
+   ```
 - OrderService에 요청된 주문 정보를 DB가 아니라 Kafka Topic으로 전송
+   - OrderService Controller 수정 전
+   ```java
+   @PostMapping("/{userId}/orders")
+    public ResponseEntity<ResponseOrder> createOrder(@PathVariable("userId") String userId,
+                                                     @RequestBody RequestOrder orderDetails) {
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
+        OrderDto orderDto = mapper.map(orderDetails, OrderDto.class);
+        orderDto.setUserId(userId);
+
+        /* jpa */
+        OrderDto createdOrder = orderService.createOrder(orderDto);
+        ResponseOrder responseOrder = mapper.map(createdOrder, ResponseOrder.class);
+
+        /* send this order to the kafka */
+        kafkaProducer.send("example-catalog-topic", orderDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseOrder);
+    }
+   ```
 - Kafka Topic에 설정된 Kafka Sink Connect를 사용해 단일 DB에 저장 -> 데이터 동기화
