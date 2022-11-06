@@ -249,3 +249,7 @@ public class KafkaConsumer {
 ![image](https://user-images.githubusercontent.com/31242766/200150046-1f79e357-2129-429c-876b-130316005ede.png)
 
 ### Multiple Order Service에서의 데이터 동기화
+- OrderService의 JPA 데이터베이스 교체
+   - H2 DB -> MariaDB
+- OrderService에 요청된 주문 정보를 DB가 아니라 Kafka Topic으로 전송
+- Kafka Topic에 설정된 Kafka Sink Connect를 사용해 단일 DB에 저장 -> 데이터 동기화
