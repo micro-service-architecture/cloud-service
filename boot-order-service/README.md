@@ -98,12 +98,153 @@ dependencies {
 Kafka를 활용하기 위해 먼저, [Kafka](https://github.com/haeyonghahn/TIL/tree/master/Kafka) 에 대해 알아보고 OrderService 와 [CatalogService](https://github.com/multi-module-project/cloud-service/tree/master/boot-catalog-service) 를 통해 데이터 동기화 문제를 해결해보자.
 
 #### 1. 데이터 동기화 Orders -> Catalogs
-각 서비스에서는 독립적으로 데이터베이스를 사용하고 있다. 만약 CatalogService에 100개의 상품을 가지고 있다. 여기서 10개의 상품을 주문한다면 Kafka를 통해서 상품 갯수를 90개로 상품 수량 업데이트하는 시나리오로 데이터 동기화를 확인한다.
-
-- OrderService에 요청된 주문의 수량 정보를 CatalogService에 반영
-- OrderService에서 Kafka Topic으로 메시지 전송 -> Producer
-- CatalogService에서 Kafka Topic에 전송된 메시지 취득 -> Consumer
+각 서비스에서는 독립적으로 데이터베이스를 사용하고 있다. 만약 CatalogService에 100개의 상품을 가지고 있다. 여기서 10개의 상품을 주문한다면 Kafka를 통해서 상품 갯수를 90개로 상품 수량 업데이트하는 시나리오로 데이터 동기화를 확인한다. Kafka Connect를 사용하지 않았으므로 Zookeeper 서버와 kafka  서버만 기동하여 테스트를 진행한다.
 
 ![image](https://user-images.githubusercontent.com/31242766/200111653-97017f67-bcce-48b4-a7af-4a90cab3636a.png)
+
+- OrderService에 요청된 주문의 수량 정보를 CatalogService에 반영      
+OrderService에서 CATALOG-003 상품을 수량을 15개 주문했다고 가정하자.
+
+![image](https://user-images.githubusercontent.com/31242766/200149698-43708df4-2667-4d9f-bb9c-a77174c30156.png)
+
+- OrderService에서 Kafka Topic으로 메시지 전송 -> Producer     
+```java
+@EnableKafka
+@Configuration
+public class KafkaProducerConfig {
+
+    @Bean
+    public ProducerFactory<String, String> producerFactory() {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
+        properties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        properties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+
+        return new DefaultKafkaProducerFactory<>(properties);
+    }
+
+    @Bean
+    public KafkaTemplate<String, String> kafkaTemplate() {
+        return new KafkaTemplate<>(producerFactory());
+    }
+}
+```
+```java
+@Service
+@Slf4j
+public class KafkaProducer {
+    private KafkaTemplate<String, String> kafkaTemplate;
+
+    public KafkaProducer(KafkaTemplate<String, String> kafkaTemplate) {
+        this.kafkaTemplate = kafkaTemplate;
+    }
+
+    public OrderDto send(String topic, OrderDto orderDto) {
+        ObjectMapper mapper = new ObjectMapper();
+        String jsonInString = "";
+        try {
+            jsonInString = mapper.writeValueAsString(orderDto);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        kafkaTemplate.send(topic, jsonInString);
+        log.info("Kafka Producer sent data from the Order microservice: " + orderDto);
+
+        return orderDto;
+    }
+}
+```
+주문 API에 `Kafka Topic`에 메시지를 보낸다. (`/* send this order to the kafka */`)
+```java
+@PostMapping("/{userId}/orders")
+public ResponseEntity<ResponseOrder> createOrder(@PathVariable("userId") String userId,
+                                               @RequestBody RequestOrder orderDetails) {
+   ModelMapper mapper = new ModelMapper();
+   mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
+   OrderDto orderDto = mapper.map(orderDetails, OrderDto.class);
+   orderDto.setUserId(userId);
+
+   /* jpa */
+   OrderDto createdOrder = orderService.createOrder(orderDto);
+   ResponseOrder responseOrder = mapper.map(createdOrder, ResponseOrder.class);
+
+   /* send this order to the kafka */
+   kafkaProducer.send("example-catalog-topic", orderDto);
+
+   return ResponseEntity.status(HttpStatus.CREATED).body(responseOrder);
+}
+```
+
+- CatalogService에서 Kafka Topic에 전송된 메시지 취득 -> Consumer
+```java
+@EnableKafka
+@Configuration
+public class KafkaConsumerConfig {
+
+    // 관심정보가 있는 Topic을 등록하는 것이다.
+    @Bean
+    public ConsumerFactory<String, String> consumerFactory() {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
+        // GROUP_ID 는 Kafka에서 Topic에 쌓여있는 메시지를 가져가는 Consumer들을 Grouping 할 수 있다.
+        // 현재는 하나 밖에 존재하여 크게 의미는 없지만 나중에는 여러 개의 Consumer가 데이터를 가져갈 때
+        // 특정한 Consumer Group을 만들어 놓고 전달하고자 하는 Group을 지정하여 가져갈 수 있다.
+        properties.put(ConsumerConfig.GROUP_ID_CONFIG, "consumerGroupId");
+        properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+
+        return new DefaultKafkaConsumerFactory<>(properties);
+    }
+
+    // Topic에 어떤 변경 사항이 있는지 지속적으로 Listening 하고 있는. 즉, 이벤트가 발생했을 때 그것을 catch할 수 있는 Listener 이다.
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, String> kafkaListenerContainerFactory
+                = new ConcurrentKafkaListenerContainerFactory<>();
+        kafkaListenerContainerFactory.setConsumerFactory(consumerFactory());
+
+        return kafkaListenerContainerFactory;
+    }
+}
+```
+`example-catalog-topic` 에 들어온 메시지에 `productId`로 Catalog 데이터를 찾고 수량을 업데이트해준다.
+```java
+@Service
+@Slf4j
+public class KafkaConsumer {
+
+    CatalogRepository repository;
+
+    public KafkaConsumer(CatalogRepository repository) {
+        this.repository = repository;
+    }
+
+    @KafkaListener(topics = "example-catalog-topic")
+    public void updateQty(String kafkaMessage) {
+        log.info("Kafka Message: ->" + kafkaMessage);
+
+        Map<String, Object> map = new HashMap<>();
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            map = mapper.readValue(kafkaMessage, new TypeReference<Map<String, Object>>() {});
+        } catch(JsonProcessingException e) {
+            e.printStackTrace();
+        }
+
+        CatalogEntity entity = repository.findByProductId((String) map.get("productId"));
+        if(entity != null) {
+            entity.setStock(entity.getStock() - (Integer) map.get("qty"));
+            repository.save(entity);
+        }
+    }
+}
+```
+- Catalog-003 의 데이터가 줄어든 모습을 확인할 수 있다.     
+
+![image](https://user-images.githubusercontent.com/31242766/200150037-e87520f2-83f9-4b76-9fe2-e034f190ec83.png)
+
+![image](https://user-images.githubusercontent.com/31242766/200150046-1f79e357-2129-429c-876b-130316005ede.png)
 
 #### 2. Multiple Order Service에서의 데이터 동기화
