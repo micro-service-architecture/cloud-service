@@ -2,6 +2,7 @@ package com.boot.order.controller;
 
 import com.boot.order.dto.OrderDto;
 import com.boot.order.entity.OrderEntity;
+import com.boot.order.messagequeue.KafkaProducer;
 import com.boot.order.service.OrderService;
 import com.boot.order.vo.RequestOrder;
 import com.boot.order.vo.ResponseOrder;
@@ -21,10 +22,12 @@ public class OrderController {
 
     Environment env;
     OrderService orderService;
+    KafkaProducer kafkaProducer;
 
-    public OrderController(Environment env, OrderService orderService) {
+    public OrderController(Environment env, OrderService orderService, KafkaProducer kafkaProducer) {
         this.env = env;
         this.orderService = orderService;
+        this.kafkaProducer = kafkaProducer;
     }
 
     @GetMapping("/health_check")
@@ -45,6 +48,9 @@ public class OrderController {
         /* jpa */
         OrderDto createdOrder = orderService.createOrder(orderDto);
         ResponseOrder responseOrder = mapper.map(createdOrder, ResponseOrder.class);
+
+        /* send this order to the kafka */
+        kafkaProducer.send("example-catalog-topic", orderDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseOrder);
     }

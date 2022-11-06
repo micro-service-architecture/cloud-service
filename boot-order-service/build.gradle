@@ -14,6 +14,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.1.0'
     implementation 'org.mariadb.jdbc:mariadb-java-client'
+    implementation 'org.springframework.kafka:spring-kafka'
 
     compileOnly 'org.springframework.boot:spring-boot-devtools'
 
