@@ -316,7 +316,7 @@ public class KafkaConsumer {
 
         /* send this order to the kafka */
         kafkaProducer.send("example-catalog-topic", orderDto);
-        kafkaProducer.send("orders", orderDto);
+        orderProducer.send("orders", orderDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseOrder);
     }
