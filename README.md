@@ -334,6 +334,16 @@ CircuitBreaker는 두 가지 용도로 기억할 수 있다. 하나는 `Open`이
 
 ![image](https://user-images.githubusercontent.com/31242766/201461954-10489749-9df8-455c-9d90-c0e8d31e060e.png)
 
+### Spring Cloud Netflix Hystrix
+![image](https://user-images.githubusercontent.com/31242766/201462591-d3999580-2309-4c72-be09-4c3da471d34e.png)
+
+2019년도 이후부터 Hystrix가 개발되어지지 않고 유지보수만 하고 있는 상태이다. 그리고 이제는 유지보수 또한 끊긴다고 한다. 그래서 Spring Boot 2.3x 버전이라고 한다면 해당 라이브러리를 사용할 수 있지만 Spring Boot가 2.4x 이상이고 Spring Cloud 2020.x 이상을 사용한다고 한다면 Hystrix 라이브러리가 더 이상 제공되지 않기 때문에 대체할 수 있는 다른 라이브러리로 대체해야한다. 
+
+![image](https://user-images.githubusercontent.com/31242766/201462694-9b4bde9a-49d9-488f-9317-ffc2d89187f9.png)
+
+### Resilience4j
+
+
 ## 참고
 https://wildeveloperetrain.tistory.com/172       
 https://stackoverflow.com/questions/54827407/remove-trace-field-from-responsestatusexception
