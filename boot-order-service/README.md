@@ -328,4 +328,24 @@ public class KafkaConsumer {
 
 - 주문 테스트
    - 2개의 OrderService 기동
+   
    ![image](https://user-images.githubusercontent.com/31242766/201459172-dd7418bf-9b06-4fe2-95bf-a217ec052d9d.png)
+   
+   ![image](https://user-images.githubusercontent.com/31242766/201459226-36b2e831-05de-4e92-b9b5-513735d4c535.png)
+
+   - 첫번째 OrderService 주문
+   
+   ![image](https://user-images.githubusercontent.com/31242766/201459635-000257cd-ec2a-4b21-a26f-6da4df1bfe09.png)
+   
+   ![tempsnip](https://user-images.githubusercontent.com/31242766/201459954-fbc6bf68-ae26-4a7f-9846-3a46746efc75.png)
+   
+   ![image](https://user-images.githubusercontent.com/31242766/201459722-3e250577-e08b-4a58-92a7-1c0873a2000b.png)
+
+   - 두번째 OrderService 주문
+   
+   ![image](https://user-images.githubusercontent.com/31242766/201459781-ec84096c-d9c7-4b7c-aef8-94143835dc44.png)
+   
+   ![tempsnip](https://user-images.githubusercontent.com/31242766/201460054-473358cc-d948-4e0a-8891-a98947a83c35.png)
+
+   ![image](https://user-images.githubusercontent.com/31242766/201460091-5c535e0d-e7bb-4116-bab8-9b066ef6de99.png)
+
