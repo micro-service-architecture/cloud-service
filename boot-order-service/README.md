@@ -325,3 +325,7 @@ public class KafkaConsumer {
 우리가 가지고 있었던 주문 정보를 어떻게 Topic에 보낼 것인지 중요한 관건이 된다. Topic에 쌓였던 데이터. 즉 메시지들은 Sink Connect가 Topic에 있는 메시지 내용들을 확인하고 어떻게 저장되어있는지 파악하여 해당하는 JdbcConnector에 데이터를 저장하게 된다. 그런데 정해져있는 포맷대로 작성하지 않게 되면 데이터는 저장이 되지 않게 될 것이다. [Kafka Connect](https://github.com/haeyonghahn/TIL/blob/master/Kafka/04.%20Kafka%20Connect.md)에서 DB에 데이터를 삽입 후 `consummer 확인`했을 때의 포맷대로 메시지 내용을 전달해야한다.
 
 ![image](https://user-images.githubusercontent.com/31242766/200306383-63ed8731-ceaf-4ba7-903c-82725d775179.png)
+
+- 주문 테스트
+   - 2개의 OrderService 기동
+   ![image](https://user-images.githubusercontent.com/31242766/201459172-dd7418bf-9b06-4fe2-95bf-a217ec052d9d.png)
