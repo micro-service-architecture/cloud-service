@@ -9,6 +9,7 @@
         * **[FeignException](#FeignException)**
         * **[ErrorDecoder](#ErrorDecoder)**
     * **[데이터 동기화 문제](#데이터-동기화-문제)**
+    * **[CircuitBreaker](#CircuitBreaker)**
 
 ## 마이크로서비스 간의 통신
 - RestTemplate 사용
@@ -323,6 +324,8 @@ public interface OrderServiceClient {
 
 ## 데이터 동기화 문제
 [Multi Orders Service](https://github.com/multi-module-project/cloud-service/tree/master/boot-order-service) 를 사례로 확인해보자.
+
+## CircuitBreaker
 
 ## 참고
 https://wildeveloperetrain.tistory.com/172       
