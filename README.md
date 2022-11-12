@@ -326,6 +326,13 @@ public interface OrderServiceClient {
 [Multi Orders Service](https://github.com/multi-module-project/cloud-service/tree/master/boot-order-service) 를 사례로 확인해보자.
 
 ## CircuitBreaker
+- https://martinfowler.com/bliki/CircuitBreaker.html
+- 장애가 발생하는 서비스에 반복적인 호출이 되지 못하게 차단
+- 특정 서비스가 정상적으로 동작하지 않을 경우 다른 기능으로 대체 수행 -> 장애 회피
+
+CircuitBreaker는 두 가지 용도로 기억할 수 있다. 하나는 `Open`이고 또 하나는 `Closed`이다. `CircuitBreaker Closed`되었다면 정상적으로 `다른 마이크로서비스를 사용할 수 있다`라는 의미이다. 예를 들어, UserSerivce에서 OrderSerivce를 사용함에 있어 아무런 문제가 없다면 `CircuitBreaker Closed`상태이다. UserService에서 OrderService로 이용이 불가한 상태가 된다면 `CircuitBreaker Open`상태가 된다. `CircuitBreaker Open`이 되면 UserSerivce가 OrderSerivce로 내용을 전달하지 않고 CircuitBreaker에서 자체적으로 기본값 또는 우회할 수 있는 값을 가지고 리턴시켜주는 작업을 진행한다. 이전에 만들었던 마이크로서비스에 CircuitBreaker를 추가시켜줌으로써 연쇄적으로 연결되어있는 다른 마이크로서비스에 문제가 발생했다하더라도 해당하는 마이크로서비스만큼은 정상적으로 작동할 수 있게끔 만들어줄 수 있다.
+
+![image](https://user-images.githubusercontent.com/31242766/201461954-10489749-9df8-455c-9d90-c0e8d31e060e.png)
 
 ## 참고
 https://wildeveloperetrain.tistory.com/172       
