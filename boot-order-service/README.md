@@ -325,3 +325,27 @@ public class KafkaConsumer {
 우리가 가지고 있었던 주문 정보를 어떻게 Topic에 보낼 것인지 중요한 관건이 된다. Topic에 쌓였던 데이터. 즉 메시지들은 Sink Connect가 Topic에 있는 메시지 내용들을 확인하고 어떻게 저장되어있는지 파악하여 해당하는 JdbcConnector에 데이터를 저장하게 된다. 그런데 정해져있는 포맷대로 작성하지 않게 되면 데이터는 저장이 되지 않게 될 것이다. [Kafka Connect](https://github.com/haeyonghahn/TIL/blob/master/Kafka/04.%20Kafka%20Connect.md)에서 DB에 데이터를 삽입 후 `consummer 확인`했을 때의 포맷대로 메시지 내용을 전달해야한다.
 
 ![image](https://user-images.githubusercontent.com/31242766/200306383-63ed8731-ceaf-4ba7-903c-82725d775179.png)
+
+- 주문 테스트
+   - 2개의 OrderService 기동
+   
+   ![image](https://user-images.githubusercontent.com/31242766/201459172-dd7418bf-9b06-4fe2-95bf-a217ec052d9d.png)
+   
+   ![image](https://user-images.githubusercontent.com/31242766/201459226-36b2e831-05de-4e92-b9b5-513735d4c535.png)
+
+   - 첫번째 OrderService 주문
+   
+   ![image](https://user-images.githubusercontent.com/31242766/201459635-000257cd-ec2a-4b21-a26f-6da4df1bfe09.png)
+   
+   ![tempsnip](https://user-images.githubusercontent.com/31242766/201459954-fbc6bf68-ae26-4a7f-9846-3a46746efc75.png)
+   
+   ![image](https://user-images.githubusercontent.com/31242766/201459722-3e250577-e08b-4a58-92a7-1c0873a2000b.png)
+
+   - 두번째 OrderService 주문
+   
+   ![image](https://user-images.githubusercontent.com/31242766/201459781-ec84096c-d9c7-4b7c-aef8-94143835dc44.png)
+   
+   ![tempsnip](https://user-images.githubusercontent.com/31242766/201460054-473358cc-d948-4e0a-8891-a98947a83c35.png)
+
+   ![image](https://user-images.githubusercontent.com/31242766/201460091-5c535e0d-e7bb-4116-bab8-9b066ef6de99.png)
+

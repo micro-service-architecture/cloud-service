@@ -9,6 +9,7 @@
         * **[FeignException](#FeignException)**
         * **[ErrorDecoder](#ErrorDecoder)**
     * **[데이터 동기화 문제](#데이터-동기화-문제)**
+    * **[CircuitBreaker](#CircuitBreaker)**
 
 ## 마이크로서비스 간의 통신
 - RestTemplate 사용
@@ -323,6 +324,25 @@ public interface OrderServiceClient {
 
 ## 데이터 동기화 문제
 [Multi Orders Service](https://github.com/multi-module-project/cloud-service/tree/master/boot-order-service) 를 사례로 확인해보자.
+
+## CircuitBreaker
+- https://martinfowler.com/bliki/CircuitBreaker.html
+- 장애가 발생하는 서비스에 반복적인 호출이 되지 못하게 차단
+- 특정 서비스가 정상적으로 동작하지 않을 경우 다른 기능으로 대체 수행 -> 장애 회피
+
+CircuitBreaker는 두 가지 용도로 기억할 수 있다. 하나는 `Open`이고 또 하나는 `Closed`이다. `CircuitBreaker Closed`되었다면 정상적으로 `다른 마이크로서비스를 사용할 수 있다`라는 의미이다. 예를 들어, UserSerivce에서 OrderSerivce를 사용함에 있어 아무런 문제가 없다면 `CircuitBreaker Closed`상태이다. UserService에서 OrderService로 이용이 불가한 상태가 된다면 `CircuitBreaker Open`상태가 된다. `CircuitBreaker Open`이 되면 UserSerivce가 OrderSerivce로 내용을 전달하지 않고 CircuitBreaker에서 자체적으로 기본값 또는 우회할 수 있는 값을 가지고 리턴시켜주는 작업을 진행한다. 이전에 만들었던 마이크로서비스에 CircuitBreaker를 추가시켜줌으로써 연쇄적으로 연결되어있는 다른 마이크로서비스에 문제가 발생했다하더라도 해당하는 마이크로서비스만큼은 정상적으로 작동할 수 있게끔 만들어줄 수 있다.
+
+![image](https://user-images.githubusercontent.com/31242766/201461954-10489749-9df8-455c-9d90-c0e8d31e060e.png)
+
+### Spring Cloud Netflix Hystrix
+![image](https://user-images.githubusercontent.com/31242766/201462591-d3999580-2309-4c72-be09-4c3da471d34e.png)
+
+2019년도 이후부터 Hystrix가 개발되어지지 않고 유지보수만 하고 있는 상태이다. 그리고 이제는 유지보수 또한 끊긴다고 한다. 그래서 Spring Boot 2.3x 버전이라고 한다면 해당 라이브러리를 사용할 수 있지만 Spring Boot가 2.4x 이상이고 Spring Cloud 2020.x 이상을 사용한다고 한다면 Hystrix 라이브러리가 더 이상 제공되지 않기 때문에 대체할 수 있는 다른 라이브러리로 대체해야한다. 
+
+![image](https://user-images.githubusercontent.com/31242766/201462694-9b4bde9a-49d9-488f-9317-ffc2d89187f9.png)
+
+### Resilience4j
+
 
 ## 참고
 https://wildeveloperetrain.tistory.com/172       
