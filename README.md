@@ -351,7 +351,7 @@ Java 전용으로 개발된 경량화된 Fault Tolerance(장애감내) 제품이
 - Cache : 응답 결과를 캐싱하는 기능 제공
 
 이전 내용에서 마이크로서비스 통신 간 장애가 발생했을 시 `ErrorDecoder` 를 사용하여 오류를 던질 수 있도록 구성했다. 하지만 이번엔 `Resilience4j`를 사용하여 `OrderService`에 오류가 발생했더라도 `UserService`만큼은 정상적으로 작동할 수 있게끔 구성해보자.
-- UserServiceImpl 수정 전, 후 비교
+- UserServiceImpl 수정 전, 후 비교       
 `userId`를 받아 사용자의 주문 내역을 반환해주는 함수이다. `ErrorDecoder`를 사용하여 FeignClient의 orderService에 오류가 발생 시 오류를 반환할 수 있도록 구성했었다. 하지만 수정 후 오류를 잡아주되 UserService의 데이터는 반환될 수 있도록 수정했다.
 ```java
 @Service
@@ -401,7 +401,7 @@ public class UserServiceImpl implements UserService {
 
 }
 ```
-`orderServiceClient.getOrders(userId)`에 오류가 발생했다면 new ArrayList<>()를 반환한다.
+`orderServiceClient.getOrders(userId)`에 오류가 발생했다면 `new ArrayList<>()`를 반환한다.
 ```java
 @Override
     public UserDto getUserByUserId(String userId) {
@@ -452,7 +452,28 @@ public class UserServiceImpl implements UserService {
 
 ![image](https://user-images.githubusercontent.com/31242766/201580921-819f7a62-306c-489d-954f-2d3962acb2a8.png)
 
+- Resilience4j Config 설정
+```java
+CircuitBreakerConfig circuitBreakerConfig = CircuitBreakerConfig.custom()
+       .failureRateThreshold(4)
+       .waitDurationInOpenState(Duration.ofMillis(1000))
+       .slidingWindowType(CircuitBreakerConfig.SlidingWindowType.COUNT_BASED)
+       .slidingWindowSize(2)
+       .build();
+```
+- failureRateThreshold : CircuitBreaker를 열지 결정하는 failure rate threshold 퍼센트 (기본값 : 50)
+- waitDurationInOpenState : CircuitBreaker를 open한 상태를 유지하는 지속 기간을 의미. 이 기간 이후에 half-open 상태 (기본값 : 60초)
+- slidingWindowType : CircuitBreaker가 닫힐 때 통화 결과를 기록하는 데 사용되는 슬라이딩 창의 유형을 구성. 카운트 기반 또는 시간 기반
+- slidingWindowSize : CircuitBreaker가 닫힐 때 호출 결과를 기록하는 데 사용되는 슬라이딩 창의 크기를 구성 (기본값 : 100)
+
+```java
+TimeLimiterConfig timeLimiterConfig = TimeLimiterConfig.custom()
+       .timeoutDuration(Duration.ofSeconds(4))
+       .build();
+```
+- timeoutDuration : TimeLimiter는 future supplier의 time limit을 정하는 API (기본값 : 1초)
 
 ## 참고
 https://wildeveloperetrain.tistory.com/172       
-https://stackoverflow.com/questions/54827407/remove-trace-field-from-responsestatusexception
+https://stackoverflow.com/questions/54827407/remove-trace-field-from-responsestatusexception      
+https://happycloud-lee.tistory.com/219
