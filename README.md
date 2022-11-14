@@ -342,6 +342,115 @@ CircuitBreaker는 두 가지 용도로 기억할 수 있다. 하나는 `Open`이
 ![image](https://user-images.githubusercontent.com/31242766/201462694-9b4bde9a-49d9-488f-9317-ffc2d89187f9.png)
 
 ### Resilience4j
+Java 전용으로 개발된 경량화된 Fault Tolerance(장애감내) 제품이다. Resilience4j는 아래 6가지 핵심모듈로 구성되어 있다.
+- Circuit Breaker : Count(요청건수 기준) 또는 Time(집계시간 기준)으로 Circuit Breaker 제공
+- Bulkhead : 각 요청을 격리함으로써, 장애가 다른 서비스에 영향을 미치지 않게 함(bulkhead-격벽이라는 뜻)
+- RateLimiter : 요청의 양을 조절하여 안정적인 서비스를 제공
+- Retry : 요청이 실패하였을 때 재시도하는 기능 제공
+- TimeLimiter : 응답시간이 지정된 시간을 초과하면 Timeout을 발생시켜준다
+- Cache : 응답 결과를 캐싱하는 기능 제공
+
+이전 내용에서 마이크로서비스 통신 간 장애가 발생했을 시 `ErrorDecoder` 를 사용하여 오류를 던질 수 있도록 구성했다. 하지만 이번엔 `Resilience4j`를 사용하여 `OrderService`에 오류가 발생했더라도 `UserService`만큼은 정상적으로 작동할 수 있게끔 구성해보자.
+- UserServiceImpl 수정 전, 후 비교
+`userId`를 받아 사용자의 주문 내역을 반환해주는 함수이다. `ErrorDecoder`를 사용하여 FeignClient의 orderService에 오류가 발생 시 오류를 반환할 수 있도록 구성했었다. 하지만 수정 후 오류를 잡아주되 UserService의 데이터는 반환될 수 있도록 수정했다.
+```java
+@Service
+@Slf4j
+public class UserServiceImpl implements UserService {
+   ...
+   @Override
+    public UserDto getUserByUserId(String userId) {
+        UserEntity userEntity = userRepository.findByUserId(userId);
+
+        if(userEntity == null)
+            throw new UsernameNotFoundException("User not found");
+
+        UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
+
+//        List<ResponseOrder> orders = new ArrayList<>();
+
+        /* Using as Rest Template */
+        /**
+         * url : http://127.0.0.1:8000/order-service/%s/orders
+         * Method : GET
+         * parameters : null
+         * response : List<ResponseOrder>
+         */
+//        String orderUrl = String.format(env.getProperty("order_service.url"), userId);
+//        ResponseEntity<List<ResponseOrder>> orderListResponse = restTemplate.exchange(orderUrl, HttpMethod.GET,
+//                null,
+//                new ParameterizedTypeReference<List<ResponseOrder>>() {
+//        });
+//        List<ResponseOrder> orderList = orderListResponse.getBody();
+
+        /* Using a feign client */
+//        List<ResponseOrder> orderList = null;
+//        try {
+//            orderList = orderServiceClient.getOrders(userId);
+//        } catch (FeignException ex) {
+//            log.error(ex.getMessage());
+//        }
+
+        /* ErrorDecoder */
+        List<ResponseOrder> orderList = orderServiceClient.getOrders(userId);
+
+        userDto.setOrders(orderList);
+
+        return userDto;
+    }
+
+}
+```
+`orderServiceClient.getOrders(userId)`에 오류가 발생했다면 new ArrayList<>()를 반환한다.
+```java
+@Override
+    public UserDto getUserByUserId(String userId) {
+        UserEntity userEntity = userRepository.findByUserId(userId);
+
+        if(userEntity == null)
+            throw new UsernameNotFoundException("User not found");
+
+        UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
+
+//        List<ResponseOrder> orders = new ArrayList<>();
+
+        /* Using as Rest Template */
+        /**
+         * url : http://127.0.0.1:8000/order-service/%s/orders
+         * Method : GET
+         * parameters : null
+         * response : List<ResponseOrder>
+         */
+//        String orderUrl = String.format(env.getProperty("order_service.url"), userId);
+//        ResponseEntity<List<ResponseOrder>> orderListResponse = restTemplate.exchange(orderUrl, HttpMethod.GET,
+//                null,
+//                new ParameterizedTypeReference<List<ResponseOrder>>() {
+//        });
+//        List<ResponseOrder> orderList = orderListResponse.getBody();
+
+        /* Using a feign client */
+//        List<ResponseOrder> orderList = null;
+//        try {
+//            orderList = orderServiceClient.getOrders(userId);
+//        } catch (FeignException ex) {
+//            log.error(ex.getMessage());
+//        }
+
+        /* ErrorDecoder */
+//        List<ResponseOrder> orderList = orderServiceClient.getOrders(userId);
+
+        CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitbreaker");
+        List<ResponseOrder> orderList = circuitBreaker.run(() -> orderServiceClient.getOrders(userId),
+                throwable -> new ArrayList<>());
+
+        userDto.setOrders(orderList);
+
+        return userDto;
+    }
+```
+![image](https://user-images.githubusercontent.com/31242766/201580889-24e812fe-0b46-400a-b36b-0705b8b5de2c.png)
+
+![image](https://user-images.githubusercontent.com/31242766/201580921-819f7a62-306c-489d-954f-2d3962acb2a8.png)
 
 
 ## 참고
