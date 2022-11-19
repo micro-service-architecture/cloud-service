@@ -11,7 +11,7 @@
     * **[데이터 동기화 문제](#데이터-동기화-문제)**
 * **[장애 처리와 마이크로서비스 분산 추적](#장애-처리와-마이크로서비스-분산-추적)**
     * **[CircuitBreaker](#CircuitBreaker)**
-    
+    * **[Zipkin](#Zipkin)**
 
 ## 마이크로서비스 간의 통신
 - RestTemplate 사용
@@ -475,6 +475,37 @@ TimeLimiterConfig timeLimiterConfig = TimeLimiterConfig.custom()
        .build();
 ```
 - timeoutDuration : TimeLimiter는 future supplier의 time limit을 정하는 API (기본값 : 1초)
+
+### Zipkin
+하나의 서비스 시작이 되고 끝날 때까지 다양한 형태의 마이크로서비스가 연결될 수 있기 때문에 사용자 요청이 어디를 거쳐서 어떻게 진행되어 왔는지, 누가 문제가 되었는지 시각적으로. 또는 로그 파일로 파악할 수 있는 서비스가 필요하게 되었다. 그래서 Zipkin이라는 서비스를 이용해서 해당하는 부분을 처리해보려고 한다.
+
+- https://zipkin.io/
+- Twitter에서 사용하는 분산 환경의 Timing 데이터 수집, 추적 시스템(오픈소스)
+- Google Drapper에서 발전하였으며, 분산환경에서의 시스템 병목 현상 파악
+- Collector, Query Service, Database WebUI로 구성
+- Span
+   - 하나의 요청에 사용되는 작업의 단위
+   - 64 bit unique ID
+- Trace
+   - 트리 구조로 이뤄진 Span 셋
+   - 하나의 요청에 대한 같은 Trace ID 발급
+
+#### Spring Cloud Sleuth
+- 스프링 부트 애플리케이션을 Zipkin과 연동한다.
+- 요청 값에 따른 Trace ID, Span ID를 부여한다.
+- Trace와 Span ID을 로그에 추가 가능하다. 아래와 같은 곳에서 Trace와 Span ID를 발생시켜 추적 정보로 사용할 수 있다.
+   - servlet filter
+   - rest template
+   - scheduled actions
+   - message channels
+   - feign client
+
+#### Spring Cloud Sleuth + Zipkin
+먼저, `마이크로서비스 C`로 갈 수도 있지만 `마이크로서비스 D`로 갈 수 있다고 가정해보자. 처음에 사용자가 하나의 요청을 `마이크로서비스 A`로 전달한다. 이 때 Trace ID(`AA`)가 발급이된다. 그리고 처음 발생한 Span ID(`AA`)는 같은 걸로 발급이 된다. 이 후, 요청된 작업이 끝날 때까지는 같은 Trace ID(`AA`)가 사용이 된다. `마이크로서비스 B` 에서 `마이크로서비스 C`로 요청할 때에는 Trace ID(`AA`)는 그대로이며, Span ID(`BB`)는 새로 발급이 된다. `마이크로서비스 C`에서 `마이크로서비스 D`를 호출할 때에도 마찬가지이다. 
+
+![image](https://user-images.githubusercontent.com/31242766/202846343-9f16401b-096b-44a4-9bd9-75db9e051639.png)
+
+
 
 ## 참고
 https://wildeveloperetrain.tistory.com/172       
