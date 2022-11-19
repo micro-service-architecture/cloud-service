@@ -505,9 +505,11 @@ TimeLimiterConfig timeLimiterConfig = TimeLimiterConfig.custom()
 - Zipkin
    - 웹에서 제공하는 명령어를 실행하는 것만으로 간단하게 설치할 수 있고 여기 약간의 설정을 추가해서 ES와 같은 사용할 수 있다.
 ```shell
-curl -sSL https://zipkin.io/quickstart.sh | bash -s
+curl -sSL https://zipkin.io/quickstart.sh | bash -s <- 다운로드 명령어
 java -jar zipkin.jar --STORAGE_TYPE=elasticsearch --ES_HOSTS=http://127.0.0.1:9200
 ```
+![image](https://user-images.githubusercontent.com/31242766/202847725-e0e9ee6b-fc74-4b8d-9dff-3eea9c826e8f.png)
+
 ![image](https://user-images.githubusercontent.com/31242766/202847185-ac09f268-0f32-4133-bbfd-29339e4123c7.png)
 
 #### Spring Cloud Sleuth
