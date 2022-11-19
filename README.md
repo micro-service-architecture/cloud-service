@@ -530,6 +530,6 @@ java -jar zipkin.jar --STORAGE_TYPE=elasticsearch --ES_HOSTS=http://127.0.0.1:92
 ## 참고
 https://wildeveloperetrain.tistory.com/172       
 https://stackoverflow.com/questions/54827407/remove-trace-field-from-responsestatusexception      
-https://happycloud-lee.tistory.com/219
-https://engineering.linecorp.com/ko/blog/line-ads-msa-opentracing-zipkin/
+https://happycloud-lee.tistory.com/219      
+https://engineering.linecorp.com/ko/blog/line-ads-msa-opentracing-zipkin/      
 https://jinheecong.tistory.com/18
