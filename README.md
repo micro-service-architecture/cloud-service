@@ -489,6 +489,26 @@ TimeLimiterConfig timeLimiterConfig = TimeLimiterConfig.custom()
 - Trace
    - 트리 구조로 이뤄진 Span 셋
    - 하나의 요청에 대한 같은 Trace ID 발급
+   
+#### Zipkin 아키텍처
+1. Reporter가 Transport를 통해서 Collector에 트레이스 정보를 전달한다.
+2. 전달된 트레이스 정보는 Database에 저장된다.
+3. Zipkin UI에서 API를 통해 해당 정보를 시각화해서 제공한다.
+
+각 컴포넌트를 조금 더 자세히 알아보자.
+
+![image](https://user-images.githubusercontent.com/31242766/202846934-d7704a5e-bf83-4544-aafc-dc1eb8df880a.png)
+- Reporter
+   - 각 서버는 계측(instrumented) 라이브러리를 사용해야 Reporter로서 동작할 수 있다. Zipkin에서는 다양한 언어에 대한 라이브러리를 제공하고 있다.([참고](https://zipkin.io/pages/tracers_instrumentation.html))
+- Database
+   - Zipkin에서 몇 가지 Storage를 지원하고 있다.([참고](https://github.com/openzipkin/zipkin#storage-component))
+- Zipkin
+   - 웹에서 제공하는 명령어를 실행하는 것만으로 간단하게 설치할 수 있고 여기 약간의 설정을 추가해서 ES와 같은 사용할 수 있다.
+```shell
+curl -sSL https://zipkin.io/quickstart.sh | bash -s
+java -jar zipkin.jar --STORAGE_TYPE=elasticsearch --ES_HOSTS=http://127.0.0.1:9200
+```
+![image](https://user-images.githubusercontent.com/31242766/202847185-ac09f268-0f32-4133-bbfd-29339e4123c7.png)
 
 #### Spring Cloud Sleuth
 - 스프링 부트 애플리케이션을 Zipkin과 연동한다.
@@ -505,9 +525,9 @@ TimeLimiterConfig timeLimiterConfig = TimeLimiterConfig.custom()
 
 ![image](https://user-images.githubusercontent.com/31242766/202846343-9f16401b-096b-44a4-9bd9-75db9e051639.png)
 
-
-
 ## 참고
 https://wildeveloperetrain.tistory.com/172       
 https://stackoverflow.com/questions/54827407/remove-trace-field-from-responsestatusexception      
 https://happycloud-lee.tistory.com/219
+https://engineering.linecorp.com/ko/blog/line-ads-msa-opentracing-zipkin/
+https://jinheecong.tistory.com/18
