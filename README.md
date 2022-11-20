@@ -14,7 +14,7 @@
     * **[Zipkin](#Zipkin)**
 * **[마이크로서비스 모니터링](#마이크로서비스-모니터링)**
     * **[Turbin Server](#Turbin-Server)**
-    * **[Micrometer + Monitoring](#Micrometer-+-Monitoring)**
+    * **[Micrometer와 Monitoring System](#Micrometer와-Monitoring System)**
 
 ## 마이크로서비스 간의 통신
 - RestTemplate 사용
@@ -689,7 +689,7 @@ Circuit Breaker 정보 등 등을 알 수 있다. 하지만 단점이 존재한�
 
 ![image](https://user-images.githubusercontent.com/31242766/202899404-c1064081-ca9e-432e-bbab-0f7f6f2e7cd9.png)
 
-### Micrometer + Monitoring
+### Micrometer와 Monitoring System
 ![image](https://user-images.githubusercontent.com/31242766/202899546-d79b25c9-14fc-4a78-a1f7-fd0f4d3b33c2.png)
 
 #### Micrometer
