@@ -15,6 +15,7 @@
 * **[마이크로서비스 모니터링](#마이크로서비스-모니터링)**
     * **[Turbin Server](#Turbin-Server)**
     * **[Micrometer와 Monitoring System](#Micrometer와-Monitoring-System)**
+    * **[Prometheus와 Grafana](#Prometheus와-Grafana)**
 
 ## 마이크로서비스 간의 통신
 - RestTemplate 사용
@@ -822,6 +823,21 @@ public String status() {
 
 ![image](https://user-images.githubusercontent.com/31242766/202902864-2192f1b9-72a3-4ff0-b3a9-2976f1462ee5.png)
 ![image](https://user-images.githubusercontent.com/31242766/202902916-4d585819-0e52-4258-8e3f-2ac7f3c27178.png)
+
+### Prometheus와 Grafana
+#### Prometheus
+- https://prometheus.io/download/
+- Metrics를 수집하고 모니터링 및 알람에 사용되는 오픈소스 애플리케이션
+- 2016년부터 CNCF(Cloud Native Computer Fundation) 단체에서 관리되는 2번째 공식 프로젝트
+   - Level DB -> Time Series Database(TSDB) 즉, 각종 지표가 시간 순으로 정보를 담는다라고 생각하면 될 것 같다.
+- Pull 방식의 구조와 다양한 Metric Exporter 제공, Java 뿐만 아니라 다양한 언어 지원을 한다.
+- 시계열 DB에 Metric 저장 -> 조회 가능(Query)
+
+#### Grafana
+- 데이터 시각화, 모니터링 및 분석을 위한 오픈소스 애플리케이션
+- 시계열 데이터를 시각화하기 위한 대시보드 제공
+
+![image](https://user-images.githubusercontent.com/31242766/202903327-98b7e879-3a21-4d1b-bf38-f4f695b8b609.png)
 
 ## 참고
 https://wildeveloperetrain.tistory.com/172       
