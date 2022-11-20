@@ -527,6 +527,140 @@ java -jar zipkin.jar --STORAGE_TYPE=elasticsearch --ES_HOSTS=http://127.0.0.1:92
 
 ![image](https://user-images.githubusercontent.com/31242766/202846343-9f16401b-096b-44a4-9bd9-75db9e051639.png)
 
+#### Spring Cloud Sleuth + Zipkin 실습
+- application.yml 설정
+```yml
+...
+spring:
+  application:
+    name: user-service
+  zipkin:
+    base-url: http://127.0.0.1:9411 # 데이터를 전송할 zipkin 서버 url
+    enabled: true
+  sleuth:
+    sampler:
+      probability: 1.0 # 어플리케이션으로 오늘 요청 중 초당 몇 퍼센트나 트렌잭션 정보를 외부로 전달할지 설정한다. 0.0 ~ 1.0 값을 사용할 수 있으며 디폴트는 0.1 (10%)이다.
+...
+```
+- orderService log 확인
+```java
+@PostMapping("/{userId}/orders")
+public ResponseEntity<ResponseOrder> createOrder(@PathVariable("userId") String userId,
+                                               @RequestBody RequestOrder orderDetails) {
+  log.info("Before add orders data");
+  ModelMapper mapper = new ModelMapper();
+  mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+
+  OrderDto orderDto = mapper.map(orderDetails, OrderDto.class);
+  orderDto.setUserId(userId);
+
+  /* jpa */
+  OrderDto createdOrder = orderService.createOrder(orderDto);
+  ResponseOrder responseOrder = mapper.map(createdOrder, ResponseOrder.class);
+
+  /* kafka */
+  //orderDto.setOrderId(UUID.randomUUID().toString());
+  //orderDto.setTotalPrice(orderDetails.getQty() * orderDetails.getUnitPrice());
+
+  /* send this order to the kafka */
+  //kafkaProducer.send("example-catalog-topic", orderDto);
+  //orderProducer.send("orders", orderDto);
+
+  //ResponseOrder responseOrder = mapper.map(orderDto, ResponseOrder.class);
+
+  log.info("After added orders data");
+  return ResponseEntity.status(HttpStatus.CREATED).body(responseOrder);
+}
+```
+![image](https://user-images.githubusercontent.com/31242766/202897775-d1de6d4a-8fd2-4da4-91dc-28d87624eeb0.png)
+
+![tempsnip](https://user-images.githubusercontent.com/31242766/202897584-9f078016-4caa-49a7-9911-5fe12c3cdd5c.png)
+
+![image](https://user-images.githubusercontent.com/31242766/202897678-623f7b7e-fd57-4f82-ac0f-3ed6eae29625.png)
+
+- userService log 확인
+```java
+@Override
+public UserDto getUserByUserId(String userId) {
+  UserEntity userEntity = userRepository.findByUserId(userId);
+
+  if(userEntity == null)
+      throw new UsernameNotFoundException("User not found");
+
+  UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
+
+//List<ResponseOrder> orders = new ArrayList<>();
+
+  /* Using as Rest Template */
+  /**
+   * url : http://127.0.0.1:8000/order-service/%s/orders
+   * Method : GET
+   * parameters : null
+   * response : List<ResponseOrder>
+   */
+//String orderUrl = String.format(env.getProperty("order_service.url"), userId);
+//ResponseEntity<List<ResponseOrder>> orderListResponse = restTemplate.exchange(orderUrl, HttpMethod.GET,
+//    null,
+//    new ParameterizedTypeReference<List<ResponseOrder>>() {
+//});
+//List<ResponseOrder> orderList = orderListResponse.getBody();
+
+  /* Using a feign client */
+//List<ResponseOrder> orderList = null;
+//try {
+//  orderList = orderServiceClient.getOrders(userId);
+//} catch (FeignException ex) {
+//   log.error(ex.getMessage());
+//}
+
+  /* ErrorDecoder */
+//List<ResponseOrder> orderList = orderServiceClient.getOrders(userId);
+
+  log.info("Before call orders microservice");
+  CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitbreaker");
+  List<ResponseOrder> orderList = circuitBreaker.run(() -> orderServiceClient.getOrders(userId),
+          throwable -> new ArrayList<>());
+  log.info("After called orders microservice");
+
+  userDto.setOrders(orderList);
+
+  return userDto;
+}
+```
+![image](https://user-images.githubusercontent.com/31242766/202897962-799eceda-d73d-472c-a95d-10f80833aff8.png)
+
+![image](https://user-images.githubusercontent.com/31242766/202898026-dddfde77-b24b-48db-8683-c52ea936b006.png)
+
+![image](https://user-images.githubusercontent.com/31242766/202898102-d66715d9-abf0-4041-bc95-edd7a1612eb1.png)
+
+- 장애 발생 확인     
+장애를 발생시켜 zipkin을 통해 확인해보자.
+```java
+@GetMapping("/{userId}/orders")
+public ResponseEntity<List<ResponseOrder>> getOrder(@PathVariable("userId") String userId) throws Exception {
+  log.info("Before retrieve orders data");
+  Iterable<OrderEntity> orderList = orderService.getOrdersByUserId(userId);
+
+  List<ResponseOrder> result = new ArrayList<>();
+  orderList.forEach(v -> {
+      result.add(new ModelMapper().map(v, ResponseOrder.class));
+  });
+
+  try {
+      Thread.sleep(1000);
+      throw new Exception("장애 발생");
+  } catch(InterruptedException e) {
+      log.warn(e.getMessage());
+  }
+  log.info("After retrieved orders data");
+  return ResponseEntity.status(HttpStatus.OK).body(result);
+}
+```
+![image](https://user-images.githubusercontent.com/31242766/202898548-424ee9ac-f18b-407d-ae76-f943d0426db0.png)
+
+#### Zipkin 결론
+마이크로서비스는 하나의 완벽한 애플리케이션을 가지고 구동하는 것이 아니라, 여러 개의 유기적인 서비스를 연결하여 사용한다. 그래서 데이터를 확인할 때 어떤 메소드가 어떤 요청으로 연결이 되었는지 파악하는 것이 중요하다. 수십만 개 마이크로서비스로 연결되어 있을 때 중간에 문제가 생기는 것이 있는지, 어느 쪽에서 병목 현상이 일어나는지 Zipkin을 통해서 유추할 수 있다. 여기서 더 나아가 각각의 마이크로서비스가 현재 가지고 있는 메모리 상태라던지. 호출되어 있는 정확한 횟수라던지. 이러한 것을 파악하기 위해 `Prometheus` 등 모니터링 기능을 수행하는 것을 알아보자. 
+
 ## 참고
 https://wildeveloperetrain.tistory.com/172       
 https://stackoverflow.com/questions/54827407/remove-trace-field-from-responsestatusexception      
