@@ -15,6 +15,8 @@ dependencies {
     implementation group: 'org.modelmapper', name: 'modelmapper', version: '3.1.0'
     implementation 'org.mariadb.jdbc:mariadb-java-client'
     implementation 'org.springframework.kafka:spring-kafka'
+    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    implementation 'org.springframework.cloud:spring-cloud-starter-zipkin:2.2.8.RELEASE'
 
     compileOnly 'org.springframework.boot:spring-boot-devtools'
 
