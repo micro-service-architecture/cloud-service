@@ -663,6 +663,25 @@ public ResponseEntity<List<ResponseOrder>> getOrder(@PathVariable("userId") Stri
 마이크로서비스는 하나의 완벽한 애플리케이션을 가지고 구동하는 것이 아니라, 여러 개의 유기적인 서비스를 연결하여 사용한다. 그래서 데이터를 확인할 때 어떤 메소드가 어떤 요청으로 연결이 되었는지 파악하는 것이 중요하다. 수십만 개 마이크로서비스로 연결되어 있을 때 중간에 문제가 생기는 것이 있는지, 어느 쪽에서 병목 현상이 일어나는지 Zipkin을 통해서 유추할 수 있다. 여기서 더 나아가 각각의 마이크로서비스가 현재 가지고 있는 메모리 상태라던지. 호출되어 있는 정확한 횟수라던지. 이러한 것을 파악하기 위해 `Prometheus` 등 모니터링 기능을 수행하는 것을 알아보자. 
 
 ## 마이크로서비스 모니터링
+### Turbin Server
+Spring-Cloud 버전 2020.x 이전에는 각종 마이크로서비스에서 발생하는 상황, 성능을 모니터링 하기 위해서 기본적으로 `Hystrix` 또는 `Turbin Server`를 구성해서 사용했다. `Turbin Server`라는 것은 마이크로서비스에서 발생하는 각종 로그, 결과값들을 Hystrix 클라이언트의 스트림을 통해서 전송되어진 내용들을 모으고 로그 파일처럼 저장하고 있다가 Hystrix 대시보드라든지, 다른 모니터링 도구에 전달하는 역할을 수행했다. 
+```yml
+...
+#Turbin Server
+turbine:
+   appConfig:
+      msa-service-product-order,
+      msa-service-product-member,
+      msa-service-product-status
+   clusterNameExpression: new String("default")
+...
+```
+![image](https://user-images.githubusercontent.com/31242766/202899149-d8158f39-fa9a-4763-83d5-d1483658b13b.png)
+
+### Hystrix Dashboard
+- Hystrix 클라이언트에서 생성하는 스트림을 시각화
+   - Web Dashboard
+   ![image](https://user-images.githubusercontent.com/31242766/202899218-d2cd32dd-1df3-4d19-90f6-57d738739cfc.png)
 
 ## 참고
 https://wildeveloperetrain.tistory.com/172       
