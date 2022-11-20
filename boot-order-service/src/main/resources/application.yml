@@ -43,3 +43,9 @@ eureka:
 logging.level:
   org.hibernate.SQL: debug
   org.hibernate.type: trace
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans, busrefresh, info, metrics, prometheus
