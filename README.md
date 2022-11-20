@@ -13,6 +13,7 @@
     * **[CircuitBreaker](#CircuitBreaker)**
     * **[Zipkin](#Zipkin)**
 * **[마이크로서비스 모니터링](#마이크로서비스-모니터링)**
+    * **[Micrometer](#Micrometer)**
 
 ## 마이크로서비스 간의 통신
 - RestTemplate 사용
@@ -528,7 +529,7 @@ java -jar zipkin.jar --STORAGE_TYPE=elasticsearch --ES_HOSTS=http://127.0.0.1:92
 
 ![image](https://user-images.githubusercontent.com/31242766/202846343-9f16401b-096b-44a4-9bd9-75db9e051639.png)
 
-#### Spring Cloud Sleuth + Zipkin 실습
+#### Spring Cloud Sleuth + Zipkin 구현
 - application.yml 설정
 ```yml
 ...
@@ -682,6 +683,27 @@ turbine:
 - Hystrix 클라이언트에서 생성하는 스트림을 시각화
    - Web Dashboard
    ![image](https://user-images.githubusercontent.com/31242766/202899218-d2cd32dd-1df3-4d19-90f6-57d738739cfc.png)
+
+Circuit Breaker 정보 등 등을 알 수 있다. 하지만 단점이 존재한다. 웹 애플리케이션으로 기동되다보니 리소스를 많이 차지할 수 밖에 없었고 도식화되어 있는 정보가 Serial로 데이터를 보관하지 못하고 현재 발생했던 단편적인 내용만 보여주기 때문에 어제 발생했던 것이라든지, 지난 시간에 발생했던 데이터를 확인하기 위해 추가적으로 데이터베이스와 연동하는 작업이 필요하다. 
+
+![image](https://user-images.githubusercontent.com/31242766/202899404-c1064081-ca9e-432e-bbab-0f7f6f2e7cd9.png)
+
+### Micrometer + Monitoring
+![image](https://user-images.githubusercontent.com/31242766/202899546-d79b25c9-14fc-4a78-a1f7-fd0f4d3b33c2.png)
+
+#### Micrometer
+- Micrometer
+   - https://micrometer.io/
+   - JVM 기반의 애플리케이션의 Metrics 제공
+   - Spring Framework 5, Spring Boot 2부터 Spring의 Metrics 처리
+   - Prometheus 등의 다양한 모니터링 시스템 지원
+- Timer
+   - 짧은 지연 시간, 이벤트의 사용 빈도를 측정
+   - 시계열로 이벤트의 시간, 호출 빈도 등을 제공
+   - @Timed 제공
+
+#### Micrometer 구현
+
 
 ## 참고
 https://wildeveloperetrain.tistory.com/172       
