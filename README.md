@@ -704,7 +704,124 @@ Circuit Breaker 정보 등 등을 알 수 있다. 하지만 단점이 존재한�
    - @Timed 제공
 
 #### Micrometer 구현
+- `spring cloud actuator` 정보에 `info` `metrics` `prometheus`를 추가해보자.
+```yml
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans, busrefresh, info, metrics, prometheus
+```
+- micrometer는 메소드 호출에 대한 타이밍 정보를 수집하는 데 사용할 수 있는 @Timed 어노테이션을 추가하자.
+```java
+@GetMapping("/welcome")
+@Timed(value = "users.welcome", longTask = true)
+public String welcome() {
+  // =return env.getProperty("greeting.message");
+  return greeting.getMessage();
+}
+```
+```java
+@GetMapping("/health_check")
+@Timed(value = "users.status", longTask = true)
+public String status() {
+  return String.format("It's Working in User Service"
+          + ", port(local.server.port)=" + env.getProperty("local.server.port")
+          + ", port(server.port)=" + env.getProperty("server.port")
+          + ", token secret=" + env.getProperty("token.secret")
+          + ", token expiration time=" + env.getProperty("token.expiration_time"));
+}
+```
+- http://localhost:53203/actuator/metrics `metircs` 정보 확인     
+```json
+{
+  "names": [
+    "application.ready.time",
+    "application.started.time",
+    "disk.free",
+    "disk.total",
+    "executor.active",
+    "executor.completed",
+    "executor.pool.core",
+    "executor.pool.max",
+    "executor.pool.size",
+    "executor.queue.remaining",
+    "executor.queued",
+    "hikaricp.connections",
+    "hikaricp.connections.acquire",
+    "hikaricp.connections.active",
+    "hikaricp.connections.creation",
+    "hikaricp.connections.idle",
+    "hikaricp.connections.max",
+    "hikaricp.connections.min",
+    "hikaricp.connections.pending",
+    "hikaricp.connections.timeout",
+    "hikaricp.connections.usage",
+    "http.server.requests",
+    "jdbc.connections.max",
+    "jdbc.connections.min",
+    "jvm.buffer.count",
+    "jvm.buffer.memory.used",
+    "jvm.buffer.total.capacity",
+    "jvm.classes.loaded",
+    "jvm.classes.unloaded",
+    "jvm.gc.live.data.size",
+    "jvm.gc.max.data.size",
+    "jvm.gc.memory.allocated",
+    "jvm.gc.memory.promoted",
+    "jvm.gc.overhead",
+    "jvm.gc.pause",
+    "jvm.memory.committed",
+    "jvm.memory.max",
+    "jvm.memory.usage.after.gc",
+    "jvm.memory.used",
+    "jvm.threads.daemon",
+    "jvm.threads.live",
+    "jvm.threads.peak",
+    "jvm.threads.states",
+    "logback.events",
+    "process.cpu.usage",
+    "process.start.time",
+    "process.uptime",
+    "rabbitmq.acknowledged",
+    "rabbitmq.acknowledged_published",
+    "rabbitmq.channels",
+    "rabbitmq.connections",
+    "rabbitmq.consumed",
+    "rabbitmq.failed_to_publish",
+    "rabbitmq.not_acknowledged_published",
+    "rabbitmq.published",
+    "rabbitmq.rejected",
+    "rabbitmq.unrouted_published",
+    "spring.data.repository.invocations",
+    "spring.integration.channels",
+    "spring.integration.handlers",
+    "spring.integration.sources",
+    "system.cpu.count",
+    "system.cpu.usage",
+    "tomcat.sessions.active.current",
+    "tomcat.sessions.active.max",
+    "tomcat.sessions.alive.max",
+    "tomcat.sessions.created",
+    "tomcat.sessions.expired",
+    "tomcat.sessions.rejected",
+    "users.status",                       <- @Timed 어노테이션에서 추가하면 metrics 정보에 추가되어 지표를 수집할 때 사용이 된다.
+    "users.welcome",                      <- @Timed 어노테이션에서 추가하면 metrics 정보에 추가되어 지표를 수집할 때 사용이 된다.
+    "zipkin.reporter.messages",
+    "zipkin.reporter.messages.total",
+    "zipkin.reporter.queue.bytes",
+    "zipkin.reporter.queue.spans",
+    "zipkin.reporter.spans",
+    "zipkin.reporter.spans.dropped",
+    "zipkin.reporter.spans.total"
+  ]
+}
+```
+- http://localhost:53203/actuator/prometheus `prometheus` 정보 확인    
+@Timed 어노테이션에 들어가 있는 함수의 지표이다. 함수가 몇 번 호출되었는지, 사용되어 있는 시간이 어느정도 되는지 등 등이다.
 
+![image](https://user-images.githubusercontent.com/31242766/202902864-2192f1b9-72a3-4ff0-b3a9-2976f1462ee5.png)
+![image](https://user-images.githubusercontent.com/31242766/202902916-4d585819-0e52-4258-8e3f-2ac7f3c27178.png)
 
 ## 참고
 https://wildeveloperetrain.tistory.com/172       
