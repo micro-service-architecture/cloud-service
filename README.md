@@ -16,6 +16,8 @@
     * **[Turbin Server](#Turbin-Server)**
     * **[Micrometer와 Monitoring System](#Micrometer와-Monitoring-System)**
     * **[Prometheus와 Grafana](#Prometheus와-Grafana)**
+* **[애플리케이션 배포 Docker Container](#애플리케이션-배포-Docker-Container)**
+    * **[UserService](#UserService)**
 
 ## 마이크로서비스 간의 통신
 - RestTemplate 사용
@@ -838,6 +840,9 @@ public String status() {
 - 시계열 데이터를 시각화하기 위한 대시보드 제공
 
 ![image](https://user-images.githubusercontent.com/31242766/202903327-98b7e879-3a21-4d1b-bf38-f4f695b8b609.png)
+
+## 애플리케이션 배포 Docker Container
+### UserService
 
 ## 참고
 https://wildeveloperetrain.tistory.com/172       
