@@ -11,7 +11,8 @@
         * **[인가](#인가)**
     * **[Routes 정보](#Routes-정보)**
     * **[AuthorizationHeaderFilter](#AuthorizationHeaderFilter)**
-        
+* **[애플리케이션 배포 Docker Container](애플리케이션-배포-Docker-Container)**
+    * **[UserService 배포](#UserService-배포)**   
 
 ## 사용자 서비스
 ![image](https://user-images.githubusercontent.com/31242766/193811969-0d969c2f-e0d7-4cc2-8933-597192997429.png)
@@ -149,6 +150,9 @@ Spring Security 를 이용한 로그인 요청 발생 시 UsernamePasswordAuthen
 ```
 #### AuthorizationHeaderFilter
 API 요청 정보에서 JWT 토큰 및 정보를 검증하는 Custom Filter 클래스이다.
+
+## 애플리케이션 배포 Docker Container
+### UserService 배포
 
 ## 출처
 https://webhack.dynu.net/?idx=20161117.003&print=friendly     
