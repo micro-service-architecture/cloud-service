@@ -17,7 +17,7 @@
     * **[Micrometer와 Monitoring System](#Micrometer와-Monitoring-System)**
     * **[Prometheus와 Grafana](#Prometheus와-Grafana)**
 * **[애플리케이션 배포 Docker Container](#애플리케이션-배포-Docker-Container)**
-    * **[UserService](#UserService)**
+    * **[UserService 배포](#UserService-배포)**
 
 ## 마이크로서비스 간의 통신
 - RestTemplate 사용
@@ -842,7 +842,7 @@ public String status() {
 ![image](https://user-images.githubusercontent.com/31242766/202903327-98b7e879-3a21-4d1b-bf38-f4f695b8b609.png)
 
 ## 애플리케이션 배포 Docker Container
-### UserService
+### UserService 배포
 
 ## 참고
 https://wildeveloperetrain.tistory.com/172       
