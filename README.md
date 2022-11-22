@@ -20,6 +20,7 @@
     * **[Mysql 컨테이너 실행](#Mysql-컨테이너-실행)**
     * **[UserService 배포](#UserService-배포)**
 * **[애플리케이션 배포 구성](#애플리케이션-배포-구성)**
+    * **[RabbitMQ 배포](#RabbitMQ-배포)**
 
 ## 마이크로서비스 간의 통신
 - RestTemplate 사용
@@ -904,6 +905,8 @@ docker network inspect ecommerce-network
 만약 같은 네트워크에 포함된 컨테이너 간에는 IP Address 외에도 컨테이너 ID, 컨테이너 이름을 통해서 통신할 수 있게 된다.
 
 ![image](https://user-images.githubusercontent.com/31242766/203356057-2274533a-d5a8-4906-a466-aff06bb8504a.png)
+
+### RabbitMQ 배포
 
 ## 참고
 https://wildeveloperetrain.tistory.com/172       
