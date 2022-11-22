@@ -907,10 +907,19 @@ docker network inspect ecommerce-network
 ![image](https://user-images.githubusercontent.com/31242766/203356057-2274533a-d5a8-4906-a466-aff06bb8504a.png)
 
 ### RabbitMQ 배포
+```docker
+docker run -d --name rabbitmq --network ecommerce-network -p 15672:15672 -p 5672:5672 -p 15671:15671 -p 5671:5671 -p 4369:4369 -e RABBITMQ_DEFAULT_USER=guest -e RABBITMQ_DEFAULT_PASS=guest rabbitmq:management
+
+5671 포트 : TLS(Transport Layer Security)
+4369 포트 : EMPD(Erlang Port Mapper Daemon)
+```
+![image](https://user-images.githubusercontent.com/31242766/203360155-bfc8232b-d1bf-484c-94de-e81903d74a4a.png)
 
 ## 참고
 https://wildeveloperetrain.tistory.com/172       
 https://stackoverflow.com/questions/54827407/remove-trace-field-from-responsestatusexception      
 https://happycloud-lee.tistory.com/219      
 https://engineering.linecorp.com/ko/blog/line-ads-msa-opentracing-zipkin/      
-https://jinheecong.tistory.com/18
+https://jinheecong.tistory.com/18      
+https://www.rabbitmq.com/configure.html        
+https://www.rabbitmq.com/ssl.html
