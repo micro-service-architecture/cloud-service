@@ -153,6 +153,38 @@ API 요청 정보에서 JWT 토큰 및 정보를 검증하는 Custom Filter 클�
 
 ## 애플리케이션 배포 Docker Container
 ### UserService 배포
+#### Dockerfile 생성
+```docker
+FROM openjdk:17-ea-11-jdk-slim
+WORKDIR /tmp
+COPY build/libs/boot-user-service-0.0.1-SNAPSHOT.jar UserService.jar
+ENTRYPOINT ["java", "-jar", "UserService.jar"]
+
+FROM : java가 설치되어 있어야 jar 파일을 실행할 수가 있다. 그렇기 때문에 베이스가 되어야하는 "openjdk:17-ea-11-jdk-slim" 로 이미지를 생성한다.
+WORKDIR : 컨테이너 안에 "/tmp" 폴더에 파일을 생성할 것이다.
+COPY : Host PC에 "build/libs/boot-user-service-0.0.1-SNAPSHOT.jar" 파일을 컨테이너 내부에 "UserService.jar" 이름으로 복사할 것이다.
+ENTRYPOINT : 실행 커맨드를 명시하면 된다. 
+```
+![image](https://user-images.githubusercontent.com/31242766/203331651-44df4d40-fca7-4aa7-bb1d-7178ec98b538.png)
+
+#### 도커 파일 빌드
+```docker
+docker build --tag yong7317/user-service:1.0 .
+```
+
+#### docker hub 사이트에 업로드
+```docker
+docker push yong7317/user-service:1.0
+```
+![image](https://user-images.githubusercontent.com/31242766/203329939-5fbd883f-78d2-4b1a-a60e-2b40075050be.png)
+
+#### docker hub 사이트에 있는 도커 이미지 다운로드
+```docker
+docker pull yong7317/user-service:1.0
+```
+
+#### 참고
+`-DskipTests=true` 옵션 : 테스트코드의 어떤 문제로 인해서 `build`가 안될 때 사용하면 편리하다.
 
 ## 출처
 https://webhack.dynu.net/?idx=20161117.003&print=friendly     
