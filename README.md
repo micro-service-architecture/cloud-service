@@ -21,6 +21,7 @@
     * **[UserService 배포](#UserService-배포)**
 * **[애플리케이션 배포 구성](#애플리케이션-배포-구성)**
     * **[RabbitMQ 배포](#RabbitMQ-배포)**
+    * **[ConfigService 배포](#ConfigService-배포)**
 
 ## 마이크로서비스 간의 통신
 - RestTemplate 사용
@@ -914,6 +915,9 @@ docker run -d --name rabbitmq --network ecommerce-network -p 15672:15672 -p 5672
 4369 포트 : EMPD(Erlang Port Mapper Daemon)
 ```
 ![image](https://user-images.githubusercontent.com/31242766/203360155-bfc8232b-d1bf-484c-94de-e81903d74a4a.png)
+
+### ConfigService 배포
+[ConfigService](https://github.com/multi-module-project/cloud-config)에서 알아보자.
 
 ## 참고
 https://wildeveloperetrain.tistory.com/172       
