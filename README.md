@@ -853,7 +853,7 @@ docker run -d -p 13306:3306 -e MYSQL_ALLOW_EMPTY_PASSWORD=true --name mariadb ma
 --name : "mysql:5.7" 이라는 이미지에 "mysql" 컨테이너라는 이름을 부여했다.
 ```
 ```docker
-docker exec -it mysql /bin/bash
+docker exec -it mariadb /bin/bash
 
 exec : 컨테이너에 어떤 커맨드를 전달하고자 할 때 사용하는 명령어이다.
 -it : 실행되어 있는 컨테이너에 커맨드를 전달하고자 할 때 사용하는 옵션
