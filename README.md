@@ -17,6 +17,7 @@
     * **[Micrometer와 Monitoring System](#Micrometer와-Monitoring-System)**
     * **[Prometheus와 Grafana](#Prometheus와-Grafana)**
 * **[애플리케이션 배포 Docker Container](#애플리케이션-배포-Docker-Container)**
+    * **[Mysql 컨테이너 실행](#Mysql-컨테이너-실행)**
     * **[UserService 배포](#UserService-배포)**
 
 ## 마이크로서비스 간의 통신
@@ -842,6 +843,26 @@ public String status() {
 ![image](https://user-images.githubusercontent.com/31242766/202903327-98b7e879-3a21-4d1b-bf38-f4f695b8b609.png)
 
 ## 애플리케이션 배포 Docker Container
+### Mysql 컨테이너 실행
+```docker
+docker run -d -p 13306:3306 -e MYSQL_ALLOW_EMPTY_PASSWORD=true --name mariadb mariadb:10.5.17
+
+-d : 백그라운드 모드로 실행
+-p : 포트 포워딩 (앞에 있는 PC는 Host PC에서 접근하고자 하는 포트, 뒤에 있는 포트는 Container에서 응답하기 위한 포트이다.
+-e : 환경 변수 셋팅을 위한 옵션. "MYSQL_ALLOW_EMPTY_PASSWORD=true" 을 주어 password를 입력하지 않도록 설정을 부여함
+--name : "mysql:5.7" 이라는 이미지에 "mysql" 컨테이너라는 이름을 부여했다.
+```
+```docker
+docker exec -it mysql /bin/bash
+
+exec : 컨테이너에 어떤 커맨드를 전달하고자 할 때 사용하는 명령어이다.
+-it : 실행되어 있는 컨테이너에 커맨드를 전달하고자 할 때 사용하는 옵션
+```
+![image](https://user-images.githubusercontent.com/31242766/203329687-26d5eb15-ec04-4287-aae2-75bebe57db6a.png)
+
+#### Host PC에서 접근
+![image](https://user-images.githubusercontent.com/31242766/203329297-da5fe310-42dd-4176-affa-e9eead2be482.png)
+
 ### UserService 배포
 [UserService](https://github.com/multi-module-project/cloud-service/tree/master/boot-user-service)에서 알아보자.
 
