@@ -173,7 +173,7 @@ spring boot의 Tomcat의 default 저장소가 /tmp인데 위와 같이 볼륨 �
 
 #### 도커 파일 빌드
 ```docker
-docker build --tag yong7317/user-service:1.0 .
+docker build -t yong7317/user-service:1.0 .
 ```
 
 #### docker hub 사이트에 업로드
