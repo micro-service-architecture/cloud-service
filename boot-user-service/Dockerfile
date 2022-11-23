@@ -1,4 +1,4 @@
 FROM openjdk:17-ea-11-jdk-slim
-WORKDIR /tmp
+VOLUME /tmp
 COPY build/libs/boot-user-service-0.0.1-SNAPSHOT.jar UserService.jar
 ENTRYPOINT ["java", "-jar", "UserService.jar"]
