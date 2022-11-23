@@ -19,6 +19,9 @@
 * **[애플리케이션 배포 Docker Container](#애플리케이션-배포-Docker-Container)**
     * **[Mysql 컨테이너 실행](#Mysql-컨테이너-실행)**
     * **[UserService 배포](#UserService-배포)**
+* **[애플리케이션 배포 구성](#애플리케이션-배포-구성)**
+    * **[RabbitMQ 배포](#RabbitMQ-배포)**
+    * **[ConfigService 배포](#ConfigService-배포)**
 
 ## 마이크로서비스 간의 통신
 - RestTemplate 사용
@@ -866,9 +869,61 @@ exec : 컨테이너에 어떤 커맨드를 전달하고자 할 때 사용하는 
 ### UserService 배포
 [UserService](https://github.com/multi-module-project/cloud-service/tree/master/boot-user-service)에서 알아보자.
 
+## 애플리케이션 배포 구성
+다양한 서비스들이 하나의 네트워크를 가질 수 있도록 구성해서 서로 통신할 때 문제없이 동작하려고 한다. 그러기 위해서 도커 네트워크를 만들어 보자.
+
+![image](https://user-images.githubusercontent.com/31242766/203351235-c152c038-a6bb-4b8f-9138-2073b620a247.png)
+
+### Docker Network
+- Bridge network     
+Host PC와 별도의 가상의 네트워크를 만들고 가상의 네트워크에서 만들어서 사용하는 컨테이너들을 배치하고 사용하는 방식이다. 
+```docker
+docker network create --driver bridge [브릿지 이름]
+```
+- Host network
+   - 네트워크를 호스트로 설정하면 호스트의 네트워크 환경을 게스트 네트워크에 그대로 사용한다.
+   - 포트 포워딩 없이 내부 애플리케이션을 사용할 수 있다.
+- None network
+   - 네트워크를 사용하지 않는다.
+   - 외부와 단절
+
+![image](https://user-images.githubusercontent.com/31242766/203353076-a8bfd938-68bd-4160-ae61-5c082b45cc3c.png)
+
+#### Bridge network 생성
+```docker
+docker network create --gateway 172.18.0.1 --subnet 172.18.0.0/16 ecommerce-network
+```
+![image](https://user-images.githubusercontent.com/31242766/203353609-a347f70e-dbb3-4df9-a17b-57ad20732b48.png)
+
+#### network 상세 정보 확인
+```docker
+docker network inspect ecommerce-network
+```
+![image](https://user-images.githubusercontent.com/31242766/203353903-4285b590-63b2-488e-bc1d-5a56665b45b3.png)
+
+#### 컨테이너를 사용하기 위한 네트워크를 생성해서 사용하면 좋은 점?    
+일반적으로 컨테이너는 하나의 Guest OS이다. 각각의 Guest OS마다 고유한 IP Address가 할당된다. 컨테이너 간에는 이러한 IP Address를 통해서 통신하게 되는데
+만약 같은 네트워크에 포함된 컨테이너 간에는 IP Address 외에도 컨테이너 ID, 컨테이너 이름을 통해서 통신할 수 있게 된다.
+
+![image](https://user-images.githubusercontent.com/31242766/203356057-2274533a-d5a8-4906-a466-aff06bb8504a.png)
+
+### RabbitMQ 배포
+```docker
+docker run -d --name rabbitmq --network ecommerce-network -p 15672:15672 -p 5672:5672 -p 15671:15671 -p 5671:5671 -p 4369:4369 -e RABBITMQ_DEFAULT_USER=guest -e RABBITMQ_DEFAULT_PASS=guest rabbitmq:management
+
+5671 포트 : TLS(Transport Layer Security)
+4369 포트 : EMPD(Erlang Port Mapper Daemon)
+```
+![image](https://user-images.githubusercontent.com/31242766/203360155-bfc8232b-d1bf-484c-94de-e81903d74a4a.png)
+
+### ConfigService 배포
+[ConfigService](https://github.com/multi-module-project/cloud-config)에서 알아보자.
+
 ## 참고
 https://wildeveloperetrain.tistory.com/172       
 https://stackoverflow.com/questions/54827407/remove-trace-field-from-responsestatusexception      
 https://happycloud-lee.tistory.com/219      
 https://engineering.linecorp.com/ko/blog/line-ads-msa-opentracing-zipkin/      
-https://jinheecong.tistory.com/18
+https://jinheecong.tistory.com/18      
+https://www.rabbitmq.com/configure.html        
+https://www.rabbitmq.com/ssl.html
