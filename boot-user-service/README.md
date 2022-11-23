@@ -156,14 +156,18 @@ API 요청 정보에서 JWT 토큰 및 정보를 검증하는 Custom Filter 클�
 #### Dockerfile 생성
 ```docker
 FROM openjdk:17-ea-11-jdk-slim
-WORKDIR /tmp
+VOLUME /tmp
 COPY build/libs/boot-user-service-0.0.1-SNAPSHOT.jar UserService.jar
 ENTRYPOINT ["java", "-jar", "UserService.jar"]
 
 FROM : java가 설치되어 있어야 jar 파일을 실행할 수가 있다. 그렇기 때문에 베이스가 되어야하는 "openjdk:17-ea-11-jdk-slim" 로 이미지를 생성한다.
-WORKDIR : 컨테이너 안에 "/tmp" 폴더에 파일을 생성할 것이다.
+VOLUME : 컨테이너 안에 "/tmp" 폴더에 파일을 생성할 것이다.
 COPY : Host PC에 "build/libs/boot-user-service-0.0.1-SNAPSHOT.jar" 파일을 컨테이너 내부에 "UserService.jar" 이름으로 복사할 것이다.
 ENTRYPOINT : 실행 커맨드를 명시하면 된다. 
+
+마운트에 /tmp를 사용하는 이유
+spring boot의 Tomcat의 default 저장소가 /tmp인데 위와 같이 볼륨 마운트를 해주면 
+호스트의 /var/lib/docker에 임시파일을 만들고 컨테이너 안의 /tmp 와 연결할 수 있다.
 ```
 ![image](https://user-images.githubusercontent.com/31242766/203331651-44df4d40-fca7-4aa7-bb1d-7178ec98b538.png)
 
