@@ -22,6 +22,7 @@
 * **[애플리케이션 배포 구성](#애플리케이션-배포-구성)**
     * **[RabbitMQ 배포](#RabbitMQ-배포)**
     * **[ConfigService 배포](#ConfigService-배포)**
+    * **[DiscoveryService 배포](#DiscoveryService-배포)**
 
 ## 마이크로서비스 간의 통신
 - RestTemplate 사용
@@ -918,6 +919,9 @@ docker run -d --name rabbitmq --network ecommerce-network -p 15672:15672 -p 5672
 
 ### ConfigService 배포
 [ConfigService](https://github.com/multi-module-project/cloud-config)에서 알아보자.
+
+### DiscoveryService 배포
+[DiscoveryService](https://github.com/multi-module-project/cloud-system/tree/master/discovery)에서 알아보자.
 
 ## 참고
 https://wildeveloperetrain.tistory.com/172       
