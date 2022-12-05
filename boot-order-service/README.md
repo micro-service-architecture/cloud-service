@@ -4,7 +4,9 @@
 * **[mariaDB 연동](#mariaDB-연동)**
 * **[데이터 동기화 문제](#데이터-동기화-문제)**
     * **[Kafka 를 활용한 데이터 동기화 해결하기](#Kafka-를-활용한-데이터-동기화-해결하기)**
-     * **[Multiple Order Service에서의 데이터 동기화](#Multiple-Order-Service에서의-데이터-동기화)**
+    * **[Multiple Order Service에서의 데이터 동기화](#Multiple-Order-Service에서의-데이터-동기화)**
+* **[애플리케이션 배포 구성](#애플리케이션-배포-구성)**
+    * **[OrderService 배포](#OrderService 배포)**
 
 ## APIs
 |기능|URI (API Gateway 사용시)|URL (API Gateway 미사용시)|HTTP Method|
@@ -349,3 +351,5 @@ public class KafkaConsumer {
 
    ![image](https://user-images.githubusercontent.com/31242766/201460091-5c535e0d-e7bb-4116-bab8-9b066ef6de99.png)
 
+## 애플리케이션 배포 구성
+### OrderService 배포
