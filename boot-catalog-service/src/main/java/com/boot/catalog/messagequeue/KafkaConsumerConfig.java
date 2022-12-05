@@ -20,7 +20,7 @@ public class KafkaConsumerConfig {
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
         Map<String, Object> properties = new HashMap<>();
-        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
+        properties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.18.0.101:9092");
         // GROUP_ID 는 Kafka에서 Topic에 쌓여있는 메시지를 가져가는 Consumer들을 Grouping 할 수 있다.
         // 현재는 하나 밖에 존재하여 크게 의미는 없지만 나중에는 여러 개의 Consumer가 데이터를 가져갈 때
         // 특정한 Consumer Group을 만들어 놓고 전달하고자 하는 Group을 지정하여 가져갈 수 있다.
