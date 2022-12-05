@@ -6,7 +6,7 @@
     * **[Kafka 를 활용한 데이터 동기화 해결하기](#Kafka-를-활용한-데이터-동기화-해결하기)**
     * **[Multiple Order Service에서의 데이터 동기화](#Multiple-Order-Service에서의-데이터-동기화)**
 * **[애플리케이션 배포 구성](#애플리케이션-배포-구성)**
-    * **[OrderService 배포](#OrderService 배포)**
+    * **[OrderService 배포](#OrderService-배포)**
 
 ## APIs
 |기능|URI (API Gateway 사용시)|URL (API Gateway 미사용시)|HTTP Method|
