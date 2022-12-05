@@ -353,3 +353,22 @@ public class KafkaConsumer {
 
 ## 애플리케이션 배포 구성
 ### OrderService 배포
+#### Dockerfile 생성
+```docker
+FROM openjdk:17-ea-11-jdk-slim
+VOLUME /tmp
+COPY build/libs/boot-order-service-0.0.1-SNAPSHOT.jar OrderService.jar
+ENTRYPOINT ["java", "-jar", "OrderService.jar"]
+```
+#### 도커 파일 빌드
+```docker
+docker build -t yong7317/order-service:1.0 .
+```
+#### docker hub 사이트에 업로드
+```docker
+docker push yong7317/order-service:1.0
+```
+#### 도커 파일 실행
+```docker
+docker run -d --network ecommerce-network --name order-service -e "spring.zipkin.base-url=http://zipkin:9411" -e "eureka.client.serviceUrl.defaultZone=http://discovery-service:8761/eureka/" -e "spring.datasource.url=jdbc:mariadb://mariadb:3306/mydb" -e "logging.file=/api-logs/orders-ws.log"  yong7317/order-service:1.0
+```
