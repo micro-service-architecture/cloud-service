@@ -24,6 +24,7 @@
     * **[ConfigService 배포](#ConfigService-배포)**
     * **[DiscoveryService 배포](#DiscoveryService-배포)**
     * **[ApigatewayService 배포](#ApigatewayService-배포)**
+* **[배포 서비스 IP 정리](#배포-서비스-IP-정리)**
 
 ## 마이크로서비스 간의 통신
 - RestTemplate 사용
@@ -926,6 +927,23 @@ docker run -d --name rabbitmq --network ecommerce-network -p 15672:15672 -p 5672
 
 ### ApigatewayService 배포
 [ApigatewayService](https://github.com/multi-module-project/cloud-system/tree/master/gateway)에서 알아보자.
+
+## 배포 서비스 IP 정리
+|Service (Container name)|IP address|Port|
+|----|------------------------|-------------------------|
+|rabbitmq|172.18.0.2/16|5671|
+|config-service|172.18.0.3/16|8888|
+|discovery-service|172.18.0.4/16|8761|
+|apigateway-service|172.18.0.5/16|8000|
+|mariadb|172.18.0.6/16|3306|
+|kafka-docker-zookeeper-1|172.18.0.100/16|2181|
+|kafka-docker-kafka-1|172.18.0.101/16|9092|
+|zipkin|172.18.0.7/16|9411|
+|prometheus|172.18.0.8/16|9090|
+|grafana|172.18.0.9/16|3000|
+|user-service|-|-|
+|order-service|-|-|
+|catalog-service|-|-|
 
 ## 참고
 https://wildeveloperetrain.tistory.com/172       
