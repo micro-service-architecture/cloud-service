@@ -25,6 +25,7 @@
     * **[DiscoveryService 배포](#DiscoveryService-배포)**
     * **[ApigatewayService 배포](#ApigatewayService-배포)**
     * **[OrderService 배포](#OrderService-배포)**
+    * **[CatalogService 배포](#CatalogService-배포)**
 * **[배포 서비스 IP 정리](#배포-서비스-IP-정리)**
 
 ## 마이크로서비스 간의 통신
@@ -931,6 +932,9 @@ docker run -d --name rabbitmq --network ecommerce-network -p 15672:15672 -p 5672
 
 ### OrderService 배포
 [OrderService](https://github.com/multi-module-project/cloud-service/tree/master/boot-order-service)에서 알아보자.
+
+### CatalogService 배포
+[CatalogService](https://github.com/multi-module-project/cloud-service/tree/master/boot-catalog-service)에서 알아보자.
 
 ## 배포 서비스 IP 정리
 |Service (Container name)|IP address|Port|
