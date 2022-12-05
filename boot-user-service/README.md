@@ -186,6 +186,10 @@ docker push yong7317/user-service:1.0
 ```docker
 docker pull yong7317/user-service:1.0
 ```
+#### 도커 파일 실행
+```docker
+docker run -d --network ecommerce-network --name user-service -e "spring.cloud.config.uri=http://config-service:8888" -e "spring.rabbitmq.host=rabbitmq" -e "spring.zipkin.base-url=http://zipkin:9411" -e "eureka.client.serviceUrl.defaultZone=http://discovery-service:8761/eureka/" -e "logging.file=/api-logs/users-ws.log" yong7317/user-service:1.0
+```
 
 #### 참고
 `-DskipTests=true` 옵션 : 테스트코드의 어떤 문제로 인해서 `build`가 안될 때 사용하면 편리하다.
