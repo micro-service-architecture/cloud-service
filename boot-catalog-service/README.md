@@ -3,7 +3,7 @@
 * **[APIs](#APIs)**
   * **[상품 목록 조회](#상품-목록-조회)**
 * **[애플리케이션 배포 구성](#애플리케이션-배포-구성)**
-  * **[OrderService 배포](#OrderService-배포)**
+  * **[CatalogService 배포](#CatalogService-배포)**
 
 ## APIs
 |기능|URI (API Gateway 사용시)|URL (API Gateway 미사용시)|HTTP Method|
@@ -16,7 +16,7 @@
 ![image](https://user-images.githubusercontent.com/31242766/194750839-b354374d-3468-455c-bdd7-11c54df55851.png)
 
 ## 애플리케이션 배포 구성
-### OrderService 배포
+### CatalogService 배포
 #### Dockerfile 생성
 ```docker
 FROM openjdk:17-ea-11-jdk-slim
